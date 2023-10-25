@@ -27,16 +27,24 @@ import {
     // Define the useMutation hook for saving a book
   const [saveBook] = useMutation(SAVE_BOOK);
 
+ // Use the effect to save `savedBookIds` list to localStorage when it changes
+ useEffect(() => {
+  return () => saveBookIds(savedBookIds);
+});
+
+// Create method to search for books and set state on form submit
+const handleFormSubmit = async (event) => {
+  event.preventDefault();
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
-  useEffect(() => {
-    return () => saveBookIds(savedBookIds);
-  });
+  // useEffect(() => {
+  //   return () => saveBookIds(savedBookIds);
+  // });
 
-  // create method to search for books and set state on form submit
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
+  // // create method to search for books and set state on form submit
+  // const handleFormSubmit = async (event) => {
+  //   event.preventDefault();
 
     if (!searchInput) {
       return false;
