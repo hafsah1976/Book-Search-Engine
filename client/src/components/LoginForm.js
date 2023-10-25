@@ -43,22 +43,17 @@ const LoginForm = () => {
     }
 
     try {
-      // Make a request to the login API endpoint with userFormData
-      const response = await loginUser(userFormData);
-
-      // Check if the API response is okay
-      if (!response.ok) {
-        throw new Error('Something went wrong!');
-      }
+      // Attempt to log in the user using the 'loginUser' function via the LOGIN_USER mutation
+      const { data } = await LOGIN_USER({
+        variables: { ...userFormData }
+      });
 
       // Extract the token and user data from the API response
-      const { token, user } = await response.json();
+Auth.login(data.login.token);
+      
+// Log the user data
+      console.log(data);
 
-      // Log the user data
-      console.log(user);
-
-      // Use the Auth utility to log the user in with the received token
-      Auth.login(token);
     } catch (err) {
       console.error(err);
       setShowAlert(true); // Display an alert for login failure
