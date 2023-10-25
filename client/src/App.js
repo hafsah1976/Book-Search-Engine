@@ -21,7 +21,18 @@ const httpLink = createHttpLink({
   uri: '/graphql', // Set the URI of your GraphQL API endpoint
 });
 
-
+// Create an authLink to add the authentication token to request headers
+const authLink = setContext((_, { headers }) => {
+  // Get the token from local storage (you might consider error handling if the token is not present)
+  const token = localStorage.getItem('id_token');
+  
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '', // Set the 'Authorization' header with the token
+    },
+  };
+});
 
 function App() {
   return (
