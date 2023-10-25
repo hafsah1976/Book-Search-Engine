@@ -13,15 +13,15 @@ module.exports = {
     let token = req.body.token || req.query.token || req.headers.authorization;
 
 
-    // ["Bearer", "<tokenvalue>"]
-    if (req.headers.authorization) {
-      token = token.split(' ').pop().trim();
-    }
+  // If the token is included in the 'Authorization' header, extract it
+  if (req.headers.authorization) {
+    token = token.split(" ").pop().trim(); // Remove 'Bearer ' from the token string
+  }
 
-    if (!token) {
-      return res.status(400).json({ message: 'You have no token!' });
-    }
-
+  // If there's no token, return the original request object
+  if (!token) {
+    return req;
+  }
     // verify token and get user data out of it
     try {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
