@@ -53,9 +53,9 @@ function App() {
           <Routes>
           {/* Render the Navbar component for navigation */}
             {/* Use the Switch component to render different components based on the route */}
-            <Route path='/' element={<SearchBooks />} />
+            <Route  path='/' element={<SearchBooks />} />
             {/* Render the SearchBooks component for the root path */}
-            <Route path='/saved' element={<SavedBooks />} />
+            <Route  path='/saved' element={<SavedBooks />} />
             {/* Render the SavedBooks component for the '/saved' path */}
             <Route
               path='*'

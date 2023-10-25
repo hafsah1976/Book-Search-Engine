@@ -72,7 +72,7 @@ return (
         <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
       </Form.Group>
 
-      <Form.Group className={'mb-3'}>
+      <Form.Group className='mb-3'>
         <Form.Label htmlFor='password'>Password</Form.Label>
         <Form.Control
           type='password'

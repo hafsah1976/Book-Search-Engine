@@ -2,7 +2,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 
 // for user data, allowing you to query and interact with the user data stored in your database.
-const { User } = require("../models");
+const { User, Book } = require("../models");
 
 //function that signs JSON Web Tokens (JWTs), which are used for user authentication and authorization in your GraphQL server.
 const { signToken } = require("../utils/auth");
@@ -13,12 +13,14 @@ const resolvers = {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (context.user) {
           // Retrieve user data from the database, excluding sensitive fields
-          const userData = await User.findOne({ _id: context.user._id });
+          const userData = await User.findOne({ _id: context.user._id })
+          .select('-__v -password')
+          return userData;}
       
         // If not authenticated, throw an AuthenticationError
         throw new AuthenticationError("You must be logged in!")
-      }
-    },
+
+    }
   },
     Mutation: {
         // Create a new user in the database
@@ -58,13 +60,13 @@ const resolvers = {
     //first check if the user is authenticated by verifying the presence of context.user. 
     //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pushing the new book to the savedBooks array and returns the updated user data. 
     //If the user is not authenticated, it throws an AuthenticationError to indicate that the user needs to be logged in to save a book.
-    saveBook: async (parent, { bookData }, context) => {
+    saveBook: async (parent, { book }, context) => {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (context.user) { 
             // Use Mongoose's `findOneAndUpdate` to add the new book to the user's savedBooks array
           const updatedUser = await User.findOneAndUpdate(
             {_id: context.user._id},
-            { $addToSet: { savedBooks: bookData } },
+            { $addToSet: { savedBooks: book } },
             { new: true, runValidators:true } // Return the updated user data
           );
           return updatedUser;
@@ -82,7 +84,7 @@ const resolvers = {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (context.user) {
           // Use Mongoose's `findByIdAndUpdate` to remove the book with the given bookId from the user's savedBooks array
-          const updatedUser = await User.findByIdAndUpdate(
+          const updatedUser = await User.findOneAndUpdate(
             {_id: context.user._id},
             { $pull: { savedBooks: { bookId: bookId } } },
             { new: true } // Return the updated user data

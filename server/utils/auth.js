@@ -28,6 +28,7 @@ try {
   req.user = data; // Attach user data to the request object
 } catch {
   console.log("Invalid token"); // Handle invalid tokens (for debugging)
+  return res.status(400).json({ message: 'invalid token!' });
 }
 
 // Return the updated request object (with or without user data)

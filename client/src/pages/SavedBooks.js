@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 // Removed unused import statement
 import {
   Container,
@@ -22,7 +21,7 @@ const SavedBooks = () => {
   const userData = data?.me || {};
 
   // Initialize a mutation function and error object using the REMOVE_BOOK mutation
-  const [removeBook, {error} ] = useMutation(REMOVE_BOOK);
+  const [deleteBook] = useMutation(REMOVE_BOOK);
 
   // Define a function that handles book deletion
   const handleDeleteBook = async (bookId) => {
@@ -31,7 +30,7 @@ const SavedBooks = () => {
       return false;
     }
     try {
-      const { data } = await removeBook({
+    await deleteBook({
         variables: { bookId }
       });
 
@@ -55,14 +54,14 @@ const SavedBooks = () => {
 
   return (
     <>
-    <div fluid="true" className={"text-light bg-dark p-5"}>
+    <div fluid="true" className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
       </div>
       <Container>
       {/* Display the title with the number of saved books (if any) */}
-      <h2 className={"pt-5"}>
+      <h2 className="pt-5">
           {userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
@@ -72,8 +71,8 @@ const SavedBooks = () => {
         <Row>
           {userData.savedBooks.map((book) => {
             return (
-              <Col className={'md=4'}>
-                <Card key={book.bookId} className={'border = dark'}>
+              <Col className={"md=4"}>
+                <Card key={book.bookId} border="dark">
                   {book.image ? (
                     <Card.Img
                       src={book.image}

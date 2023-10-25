@@ -26,13 +26,16 @@ const server = new ApolloServer({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const _dirname = path.dirname("");
+const buildPath = path.join(_dirname, "../client/build");
+app.use(express.static(buildPath));
 // Serve the React frontend as static assets if in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build'))
 )}
 
 // Define a route for the root URL ('/') using the Express app
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
   // Send the main HTML file as a response
   // This is often used for serving a frontend application in a single-page application (SPA) setup
   res.sendFile(path.join(__dirname, '../client/build/index.html'));

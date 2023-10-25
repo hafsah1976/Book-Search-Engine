@@ -1,35 +1,32 @@
-import React, { useState, useEffect } from 'react'; // Import React hooks and components from react-bootstrap
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Col,
   Form,
   Button,
   Card,
-  Row
+  Row,
 } from 'react-bootstrap';
 
-import { useMutation} from '@apollo/client' //// Import useMutation hook for GraphQL mutations
-import {SAVE_BOOK } from '../utils/mutations' // Import the SAVE_BOOK mutation
-import Auth from '../utils/auth'; // Import the Auth utility for user authentication
-import { saveBookIds, getSavedBookIds } from '../utils/localStorage'; // Import functions for working with local storage
+import { useMutation } from '@apollo/client';
+import { SAVE_BOOK } from '../utils/mutations';
+import Auth from '../utils/auth';
+import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
   // Create a mutation function for saving books
   const [saveBook, { error }] = useMutation(SAVE_BOOK);
-
   // Create a state to store data returned from the Google API
   const [searchedBooks, setSearchedBooks] = useState([]);
-
   // Create a state to store the data entered in the search field
   const [searchInput, setSearchInput] = useState('');
-
   // Create a state to store the IDs of saved books
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  
   // Set up a useEffect hook to save the `savedBookIds` list to local storage when the component unmounts.
-  // For more details, check out the official React documentation on useEffect with cleanup: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
-  });
+  }, [savedBookIds]);
 
   // Create a method to search for books and update the component state when the form is submitted.
   const handleFormSubmit = async (event) => {
@@ -53,55 +50,131 @@ const SearchBooks = () => {
 
       // Parse the response JSON and extract the 'items' data.
       const { items } = await response.json();
-      // Rest of your code...
+
+      // Map the fetched book data to a new format and set the component state.
+      const bookData = items.map((book) => ({
+        bookId: book.id,
+        authors: book.volumeInfo.authors || ['No author available'],
+        title: book.volumeInfo.title,
+        description: book.volumeInfo.description || '',
+        image: book.volumeInfo.imageLinks?.thumbnail || '',
+      }));
+
+      // Update the state with the formatted book data.
+      setSearchedBooks(bookData);
+
+      // Clear the search input field after processing the search.
+      setSearchInput('');
     } catch (error) {
       // Handle errors in case of network issues or other problems.
       console.error('Error:', error);
     }
-  }
-  
-// Map the fetched book data to a new format and set the component state.
-const bookData = items.map((book) => ({
-  bookId: book.id,
-  authors: book.volumeInfo.authors || ['No author available'],
-  title: book.volumeInfo.title,
-  description: book.volumeInfo.description || '',
-  image: book.volumeInfo.imageLinks?.thumbnail || '',
-}));
+  };
 
-// Update the state with the formatted book data.
-setSearchedBooks(bookData);
+  // Define a function to handle saving a book to our database
+  const handleSaveBook = async (bookId) => {
+    // Find the book in the `searchedBooks` state that matches the given bookId
+    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-// Clear the search input field after processing the search.
-setSearchInput('');
+    // Get the user's authentication token
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-} catch (error) {
-  // Handle any errors that occurred during book data processing.
-  console.error('Error:', error);
-}
-// Define a function to handle saving a book to our database
-const handleSaveBook = async (bookId) => {
-  // Find the book in the `searchedBooks` state that matches the given bookId
-  const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+    if (!token) {
+      // If there is no authentication token, return early
+      return false;
+    }
 
-  // Get the user's authentication token
-  const token = Auth.loggedIn() ? Auth.getToken() : null;
+    try {
+      // Use the saveBook mutation to save the book to the user's account
+      const { data } = await saveBook({
+        variables: { book: bookToSave }
+      });
 
-  if (!token) {
-    // If there is no authentication token, return early
-    return false;
-  }
+      // If the book is successfully saved to the user's account, update the savedBookIds state
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+    } catch (error) {
+      // Handle and log any errors that occur during the saving process
+      console.error('Error:', error);
+    }
+  };
 
-  try {
-    // Use the saveBook mutation to save the book to the user's account
-    const { data } = await saveBook({
-      variables: { book: bookToSave }
-    });
+  return (
+    <>
+      {/* Search input and form */}
+      <div className="text-light bg-dark p-5">
+        <Container>
+          <h1>Search for Books!</h1>
+          <Form onSubmit={handleFormSubmit}>
+            <Row>
+              <Col xs={12} md={8}>
+                {/* Input field for searching books */}
+                <Form.Control
+                  name='searchInput'
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  type='text'
+                  size='lg'
+                  placeholder='Search for a book'
+                />
+              </Col>
+              <Col xs={12} md={4}>
+                {/* Submit button for initiating the search */}
+                <Button type='submit' variant='success' size='lg'>
+                  Submit Search
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Container>
+      </div>
 
-    // If the book is successfully saved to the user's account, update the savedBookIds state
-    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-  } catch (error) {
-    // Handle and log any errors that occur during the saving process
-    console.error('Error:', error);
-  }
+      <Container>
+        <h2 className='pt-5'>
+          {/* Display search results count */}
+          {searchedBooks.length
+            ? `Viewing ${searchedBooks.length} results:`
+            : 'Search for a book to begin'}
+        </h2>
+        <Row>
+          {searchedBooks.map((book) => {
+            return (
+              <Col md="4" key={book.bookId}>
+                <Card border='dark'>
+                  {book.image ? (
+                    // Display the book cover image if available
+                    <Card.Img
+                      src={book.image}
+                      alt={`The cover for ${book.title}`}
+                      variant='top'
+                    />
+                  ) : null}
+                  <Card.Body>
+                    <Card.Title>{book.title}</Card.Title>
+                    <p className='small'>Authors: {book.authors}</p>
+                    <Card.Text>{book.description}</Card.Text>
+                    {Auth.loggedIn() && (
+                      <Button
+                        // Disable the save button if the book is already saved
+                        disabled={savedBookIds?.some(
+                          (savedBookId) => savedBookId === book.bookId
+                        )}
+                        className='btn-block btn-info'
+                        onClick={() => handleSaveBook(book.bookId)}
+                      >
+                        {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
+                          ? 'This book has already been saved!'
+                          : 'Save this Book!'}
+                      </Button>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+    </>
+  );
 };
+
+export default SearchBooks;
