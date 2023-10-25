@@ -10,17 +10,18 @@ import {
 } from 'react-bootstrap';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
-import { REMOVE_BOOK } from '../utils/mutations';
+import { REMOVE_BOOK} from '../utils/mutations';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
 
-  // Use the `useQuery` hook to execute the GET_ME query and store the result in userData
-  const { loading, data: userData } = useQuery(GET_ME);
+  const { loading, data } = useQuery(GET_ME);   // Use the `useQuery` hook to execute the GET_ME query and store the result in userData
+
+  const userData = data?.me || {};
 
   // Initialize a mutation function and error object using the REMOVE_BOOK mutation
-  const [removeBook] = useMutation(REMOVE_BOOK);
+  const [removeBook, {error} ] = useMutation(REMOVE_BOOK);
 
   // Define a function that handles book deletion
   const handleDeleteBook = async (bookId) => {
