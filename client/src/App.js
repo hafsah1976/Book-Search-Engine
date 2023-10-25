@@ -50,18 +50,21 @@ function App() {
         <>
           {/* Wrap the content in an empty fragment */}
           <Navbar />
-          <Routes>            
- {/* Render the Navbar component for navigation */}
+          <Routes>
+          {/* Render the Navbar component for navigation */}
             {/* Use the Switch component to render different components based on the route */}
-            <Route path='/' element={<SearchBooks />} />          
-            <Route 
-            path='*'
-            element={<h1 className='display-2'>Wrong page!</h1>}
-          />
-        </Routes>
-      </>
-    </Router>
+            <Route path='/' element={<SearchBooks />} />
+            {/* Render the SearchBooks component for the root path */}
+            <Route path='/saved' element={<SavedBooks />} />
+            {/* Render the SavedBooks component for the '/saved' path */}
+            <Route
+              path='*'
+              element={<h1 className='display-2'>Wrong page!</h1>}
+            />            {/* Render an error message for any other path */}
+          </Routes>
+        </>
+      </Router>
+    </ApolloProvider>
   );
 }
-
 export default App;
