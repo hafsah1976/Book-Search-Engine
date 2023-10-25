@@ -78,7 +78,7 @@ const SearchBooks = () => {
         variables: { book: bookToSave },
       });
 
-      const savedBookId = data.saveBook._id;
+      //const savedBookId = data.saveBook._id;
 
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
