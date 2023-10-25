@@ -12,6 +12,17 @@ import SearchBooks from './pages/SearchBooks'; // Import the SearchBooks page co
 import SavedBooks from './pages/SavedBooks'; // Import the SavedBooks page component
 import Navbar from './components/Navbar'; // Import the Navbar component for navigation
 
+//This code sets up an Apollo Client with authentication handling by using the setContext function. 
+//It adds the token from local storage to the request headers before making a request to the GraphQL API.
+//This client can be used in React components to interact with your GraphQL API while handling user authentication.
+
+// Construct our main GraphQL API endpoint using createHttpLink
+const httpLink = createHttpLink({
+  uri: '/graphql', // Set the URI of your GraphQL API endpoint
+});
+
+
+
 function App() {
   return (
     <Router>
