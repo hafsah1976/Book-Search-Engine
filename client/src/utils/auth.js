@@ -54,4 +54,5 @@ class AuthService {
 }
 
 // Export an instance of the 'AuthService' class
+// eslint-disable-next-line
 export default new AuthService();

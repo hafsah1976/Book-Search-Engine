@@ -30,7 +30,9 @@ The Book Search Engine is a web application that allows users to search for book
 
 7. You can log out using the "Logout" button.
 
-![Screenshot of the Google books App]()
+[Quick-Demo of the Google books App](https://watch.screencastify.com/v/6zePkGQ5IQL4COlZvzmZ)
+
+![Google Book Search Results](Google-Book-Search.png).
 
 ## Installation
 
@@ -53,7 +55,7 @@ To run the Book Search Engine on your local development environment, follow thes
 4. Start the development server.
     - npm start
 
-The application should now be running locally at `http://localhost:3000`.
+The application should now be running locally at `http://localhost:3001`.
 
 ## Deployment
 

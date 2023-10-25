@@ -1,8 +1,9 @@
 import React from 'react'; // Import the React library for creating components
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
+import { ApolloClient } from "@apollo/client"
+ 
+ import { ApolloProvider} from '@apollo/client';
+  
+ import {InMemoryCache,
   createHttpLink,
 } from '@apollo/client'; // Import Apollo Client and related modules for handling GraphQL data
 import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client

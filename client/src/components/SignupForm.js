@@ -36,7 +36,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
         try {
-          const { data } = await createUserUser({
+          const { data } = await createUser({
             variables: { ...userFormData }
           });
     

@@ -12,7 +12,7 @@ const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);// Form validation status
   const [showAlert, setShowAlert] = useState(false);// Alert display state
-  const [loginUser, {error, data}] = useMutation(LOGIN_USER);// Use useMutation to execute the LOGIN_USER mutation
+  const [loginUser] = useMutation(LOGIN_USER);// Use useMutation to execute the LOGIN_USER mutation
 
   // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
@@ -59,7 +59,7 @@ return (
       <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
         Something went wrong with your login credentials!
       </Alert>
-      <Form.Group className={'mb-3'}>
+      <Form.Group>
         <Form.Label htmlFor='email'>Email</Form.Label>
         <Form.Control
           type='text'
@@ -72,7 +72,7 @@ return (
         <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
       </Form.Group>
 
-      <Form.Group className='mb-3'>
+      <Form.Group >
         <Form.Label htmlFor='password'>Password</Form.Label>
         <Form.Control
           type='password'
