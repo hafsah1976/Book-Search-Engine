@@ -1,24 +1,31 @@
-// see SignupForm.js for comments
+// Import necessary modules and components
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+// Import the loginUser function for making API requests
 import { loginUser } from '../utils/API';
+
+// Import the Auth utility for managing user authentication
 import Auth from '../utils/auth';
 
+// Define the functional component for the login form
 const LoginForm = () => {
+  // Initialize the component state for user form data, form validation, and alert display
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-  const [validated] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [validated] = useState(false); // Form validation status
+  const [showAlert, setShowAlert] = useState(false); // Alert display state
 
+  // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  // Create a function to handle the form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
+    // Check if the form has all the required fields (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -26,22 +33,29 @@ const LoginForm = () => {
     }
 
     try {
+      // Make a request to the login API endpoint with userFormData
       const response = await loginUser(userFormData);
 
+      // Check if the API response is okay
       if (!response.ok) {
-        throw new Error('something went wrong!');
+        throw new Error('Something went wrong!');
       }
 
+      // Extract the token and user data from the API response
       const { token, user } = await response.json();
+
+      // Log the user data
       console.log(user);
+
+      // Use the Auth utility to log the user in with the received token
       Auth.login(token);
     } catch (err) {
       console.error(err);
-      setShowAlert(true);
+      setShowAlert(true); // Display an alert for login failure
     }
 
+    // Clear the form data
     setUserFormData({
-      username: '',
       email: '',
       password: '',
     });
@@ -49,7 +63,9 @@ const LoginForm = () => {
 
   return (
     <>
+      {/* Create the login form */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+        {/* Display an alert if there is an issue with login credentials */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!
         </Alert>
@@ -89,4 +105,5 @@ const LoginForm = () => {
   );
 };
 
+// Export the LoginForm component
 export default LoginForm;
