@@ -37,7 +37,7 @@ const SavedBooks = () => {
       // Log the mutation response
       console.log(data);
 
-      // Update userData by removing the book
+      // Update userData by removing the book //finally debugged this assignement.//this is the line that was actually supposed to go inside the container to Display the title with the number of saved books (lines 62 to 70) *
       //userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
 
       // Remove the book ID from local storage
@@ -85,16 +85,19 @@ const SavedBooks = () => {
                 <p className='small'>Authors: {book.authors}</p>
                 <Card.Text>{book.description}</Card.Text>
                 {/* Add a button to delete the book */}
-                <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
-                  Delete this Book!
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </Container>
+                <Button
+                      className="btn-block btn-danger"
+                      onClick={() => handleDeleteBook(book.bookId)}
+                    >
+                      Delete this Book!
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
+    </>
   );
 };
-
-export default SavedBooks;
