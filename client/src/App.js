@@ -43,19 +43,18 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <Router>
-      <>
-        <Navbar />
-        <Routes>
-          <Route 
-            path='/' 
-            element={<SearchBooks />} 
-          />
-          <Route 
-            path='/saved' 
-            element={<SavedBooks />} 
-          />
-          <Route 
+    <ApolloProvider client={client}>
+      {/* Use ApolloProvider to provide your Apollo Client to the app */}
+      <Router>
+        {/* Set up the router for client-side routing */}
+        <>
+          {/* Wrap the content in an empty fragment */}
+          <Navbar />
+          <Routes>            
+ {/* Render the Navbar component for navigation */}
+            {/* Use the Switch component to render different components based on the route */}
+            <Route path='/' element={<SearchBooks />} />          
+            <Route 
             path='*'
             element={<h1 className='display-2'>Wrong page!</h1>}
           />
