@@ -38,7 +38,7 @@ const SavedBooks = () => {
       console.log(data);
 
       // Update userData by removing the book
-      userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
+      //userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
 
       // Remove the book ID from local storage
       removeBookId(bookId);
@@ -53,7 +53,13 @@ const SavedBooks = () => {
   }
 
   return (
-    <Container>
+    <>
+    <div fluid="true" className="text-light bg-dark p-5">
+        <Container>
+          <h1>Viewing saved books!</h1>
+        </Container>
+      </div>
+      <Container>
       {/* Display the title with the number of saved books (if any) */}
       <h2 className='pt-5'>
         {userData.me.savedBooks.length
