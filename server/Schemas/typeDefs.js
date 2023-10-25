@@ -1,7 +1,6 @@
-const { gql } = require('apollo-server-express');
-
-// Importing the gql template literal function from the Apollo Server Express package.
-  // This is where I define my GraphQL schema using the gql template literal function.
+const { gql } = require('apollo-server-express');// Importing the gql template literal function from the Apollo Server Express package.
+  
+// This is where I define my GraphQL schema using the gql template literal function.
   // Each type definition corresponds to a part of the GraphQL schema, such as Query, Mutation, User, and Book.
   // Within these types, I have defined the fields and their types.
   // For the saveBook mutation, it expects an input type BookInput (with a capital 'B').
@@ -50,3 +49,5 @@ const typeDefs = gql`
     title: String!
   }
 `;
+
+module.exports = typeDefs; // Export the typeDefs for use in your Apollo Server setup.
