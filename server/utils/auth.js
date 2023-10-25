@@ -1,14 +1,17 @@
-const jwt = require('jsonwebtoken');
+// Import the 'jsonwebtoken' library to handle JSON Web Tokens (JWT)
+const jwt = require("jsonwebtoken");
 
-// set token secret and expiration date
-const secret = 'mysecretsshhhhh';
-const expiration = '2h';
+// Set the secret key and expiration time for the JWT
+const secret = "mysecretsshhhhh"; // A secret key for signing and verifying the JWT
+const expiration = "2h"; // Expiration time of the JWT (2 hours)
 
+// Export an object with two methods: 'authMiddleware' and 'signToken'
 module.exports = {
-  // function for our authenticated routes
-  authMiddleware: function (req, res, next) {
-    // allows token to be sent via  req.query or headers
-    let token = req.query.token || req.headers.authorization;
+  // Middleware function for authenticating routes
+  authMiddleware: function ({ req }) {
+    // Allow the token to be sent via request query parameters, request body, or headers
+    let token = req.body.token || req.query.token || req.headers.authorization;
+
 
     // ["Bearer", "<tokenvalue>"]
     if (req.headers.authorization) {
