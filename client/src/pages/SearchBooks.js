@@ -10,12 +10,14 @@ import {
 
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 import Auth from '../utils/auth';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
   // Create a mutation function for saving books
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK);
   // Create a state to store data returned from the Google API
   const [searchedBooks, setSearchedBooks] = useState([]);
   // Create a state to store the data entered in the search field
@@ -25,8 +27,7 @@ const SearchBooks = () => {
   
   // Set up a useEffect hook to save the `savedBookIds` list to local storage when the component unmounts.
   useEffect(() => {
-    return () => saveBookIds(savedBookIds);
-  }, [savedBookIds]);
+    return () => saveBookIds(savedBookIds)});
 
   // Create a method to search for books and update the component state when the form is submitted.
   const handleFormSubmit = async (event) => {
@@ -39,9 +40,7 @@ const SearchBooks = () => {
 
     try {
       // Send a request to the Google Books API to search for books based on the search input.
-      const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
-      );
+      const response = await await searchGoogleBooks(searchInput);
 
       // Check if the response is not okay (HTTP status code indicates an error).
       if (!response.ok) {
@@ -57,6 +56,7 @@ const SearchBooks = () => {
         authors: book.volumeInfo.authors || ['No author available'],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description || '',
+        link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
@@ -86,7 +86,7 @@ const SearchBooks = () => {
 
     try {
       // Use the saveBook mutation to save the book to the user's account
-      const { data } = await saveBook({
+      await saveBook({
         variables: { book: bookToSave }
       });
 
