@@ -5,9 +5,9 @@ const path = require('path');
 
 const db = require('./config/connection'); // database connection setup
 
-const {authMiddleware} = require('./utils/auth'); // importing the middleware 
+const { authMiddleware } = require('./utils/auth'); // importing the middleware
 
-const { typeDefs, resolvers } = require('./Schemas'); // Import your GraphQL schema type definition and resolvers
+const { typeDefs, resolvers } = require('./schemas'); // Import your GraphQL schema type definition and resolvers
 
 // Create an Express.js application instance
 const app = express();
@@ -17,10 +17,10 @@ const PORT = process.env.PORT || 3001;
 
 // Create an Apollo Server instance with your GraphQL schema and resolvers
 const server = new ApolloServer({
-  typeDefs, //  GraphQL schema definition
-  resolvers, //  GraphQL resolvers
-  context:authMiddleware,
-});
+  typeDefs, // GraphQL schema definition
+  resolvers, // GraphQL resolvers
+  context:authMiddleware ,
+})
 
 // Enable parsing of URL-encoded and JSON request bodies
 app.use(express.urlencoded({ extended: true }));
@@ -28,8 +28,8 @@ app.use(express.json());
 
 // Serve the React frontend as static assets if in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')))
-}
+  app.use(express.static(path.join(__dirname, '../client/build'))
+)}
 
 // Define a route for the root URL ('/') using the Express app
 app.get('/', (req, res) => {
@@ -40,18 +40,18 @@ app.get('/', (req, res) => {
 
 // Create a new instance of an Apollo server with the GraphQL schema.
 // Applying Apollo Server to the Express app as middleware
-const startApolloServer = async (typeDefs, resolvers) => {
+const startApolloServer = async () => {
   await server.start();
   server.applyMiddleware({ app });
 
-// Open the database connection and start the server
-db.once('open', () => {
-  app.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}!`);
-    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
-  })
-})
+  // Open the database connection and start the server
+  db.once('open', () => {
+    app.listen(PORT, () => {
+      console.log(`React server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+    });
+  });
 };
 
 // Call the async function to start the server
-startApolloServer(typeDefs, resolvers);
+startApolloServer();
