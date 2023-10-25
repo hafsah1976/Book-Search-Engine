@@ -70,3 +70,22 @@ export const SAVE_BOOK = gql `
     }
   } 
   `;
+
+  export const REMOVE_BOOK = gql`
+  mutation removeBook($bookId: ID!) {
+    removeBook(bookId: $bookId) {
+      _id       // User's ID
+      username  // User's username
+      email     // User's email
+      bookCount // User's bookCount, the number of saved books they have should reduce as the user deletes books
+      savedBooks {
+        bookId      // ID of the saved book
+        authors     // Authors of the book
+        description // Description of the book
+        title       // Title of the book
+        image       // Image URL of the book
+        link        // Link URL of the book
+      }
+    }
+  }
+`;
