@@ -22,3 +22,11 @@ const resolvers = {
         throw new AuthenticationError("You must be logged in!");
       },
     },
+    
+    Mutation: {
+        // Create a new user in the database
+        addUser: async (parent, { username, email, password }) => {
+          const user = await User.create({ username, email, password });
+          const token = signToken(user); // Sign a JWT token for the new user
+          return { token, user }; // Return the token and user data
+        },
