@@ -2,19 +2,27 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
+import { useMutation } from "@apollo/client"; // Import useMutation to execute GraphQL mutations
+
 // Import the loginUser function for making API requests
 import { loginUser } from '../utils/API';
 
 // Import the Auth utility for managing user authentication
 import Auth from '../utils/auth';
 
+//import LOGIN USER mutation
+import {LOGIN_USER} from "../utils/mutations";
+
 // Define the functional component for the login form
 const LoginForm = () => {
+  
   // Initialize the component state for user form data, form validation, and alert display
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false); // Form validation status
   const [showAlert, setShowAlert] = useState(false); // Alert display state
 
+  const [loginUser] = useMutation(LOGIN_USER); // Use useMutation to execute the LOGIN_USER mutation
+  
   // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -30,6 +38,8 @@ const LoginForm = () => {
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setShowAlert(true);// If the form is not valid, show an alert
+      return;
     }
 
     try {
