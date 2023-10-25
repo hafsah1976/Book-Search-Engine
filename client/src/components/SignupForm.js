@@ -11,13 +11,13 @@ const SignupForm = () => {
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
 
   // Set the form validation status to false
-  const [validated, setValidated] = useState(false);
+  const [validated] = useState(false);
 
   // Manage the visibility of alerts
   const [showAlert, setShowAlert] = useState(false);
 
    // Use the ADD_USER mutation and get the addUser function and error from useMutation
-   const [addUser] = useMutation(ADD_USER); // Initialize the ADD_USER mutation
+   const [createUser] = useMutation(ADD_USER); // Initialize the ADD_USER mutation
 
     // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
@@ -35,9 +35,8 @@ const SignupForm = () => {
       event.preventDefault();
       event.stopPropagation();
     }
-        setValidated(true); // Update validation status
         try {
-          const { data } = await addUser({
+          const { data } = await createUserUser({
             variables: { ...userFormData }
           });
     
@@ -63,7 +62,7 @@ const SignupForm = () => {
               Something went wrong with your signup!
             </Alert>
     
-            <Form.Group className='mb-3'>
+            <Form.Group >
               <Form.Label htmlFor='username'>Username</Form.Label>
               <Form.Control
                 type='text'
@@ -76,7 +75,7 @@ const SignupForm = () => {
               <Form.Control.Feedback type='invalid'>Username is required!</Form.Control.Feedback>
             </Form.Group>
     
-            <Form.Group className='mb-3'>
+            <Form.Group>
               <Form.Label htmlFor='email'>Email</Form.Label>
               <Form.Control
                 type='email'
@@ -89,7 +88,7 @@ const SignupForm = () => {
               <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
             </Form.Group>
     
-            <Form.Group className='mb-3'>
+            <Form.Group>
               <Form.Label htmlFor='password'>Password</Form.Label>
               <Form.Control
                 type='password'
