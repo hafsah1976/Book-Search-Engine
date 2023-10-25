@@ -3,7 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client'; // Import useMutation from Apollo Client to execute GraphQL mutations
 // Import the ADD_USER mutation functionality
 import { ADD_USER } from '../utils/mutations';
-
+import {addUser} from '../utils/API'
 import Auth from '../utils/auth';
 
 // Define your functional component
@@ -18,21 +18,21 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
    // Use the ADD_USER mutation and get the addUser function and error from useMutation
-   const [addUser] = useMutation(ADD_USER);
+   const [addUser] = useMutation(ADD_USER); // Initialize the ADD_USER mutation
 
     // Create a function to handle changes in form inputs
-    const handleInputChange = (event) => {
-      const { name, value } = event.target;
-      setUserFormData({ ...userFormData, [name]: value });
-    };
-  
-    const handleFormSubmit = async (event) => {
-      event.preventDefault();
-  
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUserFormData({ ...userFormData, [name]: value });
+  };
+
+ const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    
+    const form = event.currentTarget;
       // Perform client-side form validation
-      const form = event.currentTarget;
       if (form.checkValidity() === false) {
-        event.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
+    }
         setValidated(true); // Update validation status
-        return;
- 
