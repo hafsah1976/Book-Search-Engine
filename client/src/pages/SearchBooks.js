@@ -46,27 +46,35 @@ const handleFormSubmit = async (event) => {
   // const handleFormSubmit = async (event) => {
   //   event.preventDefault();
 
-    if (!searchInput) {
-      return false;
+  if (!searchInput) {
+    return false;
+  }
+
+  try {
+    const response = await searchGoogleBooks(searchInput);
+
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
     }
 
-    try {
-      const response = await searchGoogleBooks(searchInput);
+    const { items } = await response.json();
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+    // Process the API response data into a format suitable for rendering
+    const bookData = items.map((book) => ({
+      bookId: book.id,
+      authors: book.volumeInfo.authors || ['No author to display'],
+      title: book.volumeInfo.title,
+      description: book.volumeInfo.description,
+      image: book.volumeInfo.imageLinks?.thumbnail || '',
+    }));
 
-      const { items } = await response.json();
-
-      const bookData = items.map((book) => ({
-        bookId: book.id,
-        authors: book.volumeInfo.authors || ['No author to display'],
-        title: book.volumeInfo.title,
-        description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || '',
-      }));
-
+    // Set the state with the processed book data and reset the search input
+    setSearchedBooks(bookData);
+    setSearchInput('');
+  } catch (err) {
+    console.error(err);
+  }
+};
       setSearchedBooks(bookData);
       setSearchInput('');
     } catch (err) {
