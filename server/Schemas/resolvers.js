@@ -75,3 +75,27 @@ const resolvers = {
         // If not authenticated, throw an AuthenticationError
         throw new AuthenticationError("You need to be logged in!");
     },
+
+     //**Mutation for removing a book from user's savedbooks field**
+
+    //The code checks if the user is authenticated by verifying the presence of context.user.
+    //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pulling (removing) the book with the given bookId from the savedBooks array and returns the updated user data.
+    //If the user is not authenticated, it throws an AuthenticationError to indicate that login is required to remove a book.
+    removeBook: async (parent, { bookId }, context) => {
+        // Check if the user is authenticated (context.user will be set if authenticated)
+        if (context.user) {
+          // Use Mongoose's `findByIdAndUpdate` to remove the book with the given bookId from the user's savedBooks array
+          const updatedUser = await User.findByIdAndUpdate(
+            context.user._id,
+            { $pull: { savedBooks: { bookId } } },
+            { new: true } // Return the updated user data
+          );
+          return updatedUser;
+        }
+        // If not authenticated, throw an AuthenticationError
+        throw new AuthenticationError("Login required!");
+    },
+    
+}
+};
+module.exports = resolvers;
