@@ -52,24 +52,22 @@ cache.writeQuery({ query: GET_ME, data: { data: { ...data.me.savedBooks } } });
 removeBookId(bookId);
 // Additionally, remove the book's id from local storage to keep it in sync with the Apollo Client's cache.
 
-
+} catch (err) {
+  console.error(err);
 }
+}
+// if data isn't here yet, say so
 
-        variables: { bookId }
-      });
-
-      // Log the mutation response
-      console.log(data);
 
       // Update userData by removing the book //finally debugged this assignement.//this is the line that was actually supposed to go inside the container to Display the title with the number of saved books (lines 62 to 70) *
       //userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
 
       // Remove the book ID from local storage
-      removeBookId(bookId);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //     removeBookId(bookId);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   // Check for loading status, and return a loading message if true
   if (loading) {
@@ -85,25 +83,16 @@ removeBookId(bookId);
       </div>
       <Container>
       {/* Display the title with the number of saved books (if any) */}
-      <h2 className="pt-5">
+      <h2>
           {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${
-                userData.savedBooks.length === 1 ? "book" : "books"
-              }:`
-            : "You have no saved books!"}
-        </h2>
-        <Row>
-          {userData.savedBooks.map((book) => {
+            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+            : 'You have no saved books!'}
+        </h2>       
+         <Row>
+         {userData.savedBooks.map((book) => {
             return (
-              <Col className={"md=4"}>
-                <Card key={book.bookId} border="dark">
-                  {book.image ? (
-                    <Card.Img
-                      src={book.image}
-                      alt={`The cover for ${book.title}`}
-                      variant="top"
-                    />
-                  ) : null}
+              <Card key={book.bookId} border='dark'>
+                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
                 <p className={'small'}>Authors: {book.authors}</p>
