@@ -22,18 +22,20 @@ module.exports = {
   if (!token) {
     return req;
   }
-    // verify token and get user data out of it
-    try {
-      const { data } = jwt.verify(token, secret, { maxAge: expiration });
-      req.user = data;
-    } catch {
-      console.log('Invalid token');
-      return res.status(400).json({ message: 'invalid token!' });
-    }
+// Verify the token and extract user data from it
+try {
+  const { data } = jwt.verify(token, secret, { maxAge: expiration });
+  req.user = data; // Attach user data to the request object
+} catch {
+  console.log("Invalid token"); // Handle invalid tokens (for debugging)
+}
 
-    // send to next endpoint
-    next();
-  },
+// Return the updated request object (with or without user data)
+return req;
+},
+  //   // send to next endpoint
+  //   next();
+  // },
   signToken: function ({ username, email, _id }) {
     const payload = { username, email, _id };
 
