@@ -31,6 +31,17 @@ const SavedBooks = () => {
     }
     try {
     await deleteBook({
+      variables: { bookId: bookId },
+update: (cache) => {
+  // Read the current user data from the cache using the GET_ME query
+  const data = cache.readQuery({ query: GET_ME });
+
+  // Extract the user's data and their savedBooks array from the cache
+  const userDataCache = data.me;
+  const savedBooksCache = userDataCache.savedBooks;
+
+}
+
         variables: { bookId }
       });
 
