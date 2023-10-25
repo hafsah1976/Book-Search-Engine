@@ -58,4 +58,24 @@ const SearchBooks = () => {
       // Handle errors in case of network issues or other problems.
       console.error('Error:', error);
     }
-  };
+  }
+  
+// Map the fetched book data to a new format and set the component state.
+const bookData = items.map((book) => ({
+  bookId: book.id,
+  authors: book.volumeInfo.authors || ['No author available'],
+  title: book.volumeInfo.title,
+  description: book.volumeInfo.description || '',
+  image: book.volumeInfo.imageLinks?.thumbnail || '',
+}));
+
+// Update the state with the formatted book data.
+setSearchedBooks(bookData);
+
+// Clear the search input field after processing the search.
+setSearchInput('');
+
+} catch (error) {
+  // Handle any errors that occurred during book data processing.
+  console.error('Error:', error);
+}
