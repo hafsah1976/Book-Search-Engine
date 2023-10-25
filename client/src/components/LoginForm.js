@@ -12,7 +12,7 @@ const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);// Form validation status
   const [showAlert, setShowAlert] = useState(false);// Alert display state
-  const [loginUser] = useMutation(LOGIN_USER);// Use useMutation to execute the LOGIN_USER mutation
+  const [loginUser, {error, data}] = useMutation(LOGIN_USER);// Use useMutation to execute the LOGIN_USER mutation
 
   // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
@@ -28,8 +28,6 @@ const handleFormSubmit = async (event) => {
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
-      setShowAlert(true);// If the form is not valid, show an alert
-      return;
     }
 
     try {
@@ -41,8 +39,6 @@ const handleFormSubmit = async (event) => {
  // Extract the token and user data from the API response
  Auth.login(data.login.token);
 
- // Log the user data
- console.log(data);
 } catch (err) {
  console.error(err);
  setShowAlert(true); // Display an alert for login failure

@@ -1,89 +1,60 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-// Define the LOGIN_USER mutation using gql template literal
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
-    
     login(email: $email, password: $password) {
-    
       token
       user {
         _id
         username
-        email
-        bookCount
-        savedBooks {
-          bookId
-          authors
-          description
-          title
-          image
-          link
-        }
       }
     }
   }
 `;
 
-//This mutation is intended to create a new user. It expects the following variables: username, email, and password. 
-//When executed, it returns a token and the user's ID, username, and email.
-// tip to DEBUG: verify that the server-side mutation (addUser) and corresponding resolver are correctly defined and that front-end code properly uses this mutation to create a new user.
-
-export const ADD_USER = gql `
+export const ADD_USER = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
     addUser(username: $username, email: $email, password: $password) {
-        token     
-        user {    
-          _id     
-          username
-          email   
-          bookCount
-            savedBooks {
-              bookId
-              authors
-              description
-              title
-              image
-              link
-        }
+      token
+      user {
+        _id
+        username
       }
     }
   }
 `;
 
-export const SAVE_BOOK = gql `
-  mutation saveBook($newBook: BookInput!) {
-    saveBook(newBook: $newBook) {  
-      _id       
-      username     
-      email       
+export const SAVE_BOOK = gql`
+  mutation SaveBook($book: saveBookCriteria) {
+  saveBook(book: $book) {
+    _id
+      username
+      email
       bookCount
-      savedBooks { 
-        bookId    
-        authors   
+      savedBooks {
+        bookId
+        authors
         description
         title
-        image 
-        link  
+        image
       }
-    }
-  } 
-  `;
+  }
+}`;
 
-  export const REMOVE_BOOK = gql`
-  mutation removeBook($bookId: ID!) {
+
+export const REMOVE_BOOK = gql`
+  mutation RemoveBook($bookId: String!) {
     removeBook(bookId: $bookId) {
-      _id      
-      username 
-      email     
-      bookCount 
+      _id
+      username
+      email
+      bookCount
       savedBooks {
-        bookId    
-        authors    
-        description 
-        title      
-        image   
-        link     
+        bookId
+        authors
+        description
+        title
+        image
       }
     }
   }
