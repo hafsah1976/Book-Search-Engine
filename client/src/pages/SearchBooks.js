@@ -75,65 +75,60 @@ const handleFormSubmit = async (event) => {
     console.error(err);
   }
 };
-      setSearchedBooks(bookData);
-      setSearchInput('');
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  // create function to handle saving a book to our database
-  const handleSaveBook = async (bookId) => {
-    // find the book in `searchedBooks` state by the matching id
-    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+ // Create function to handle saving a book to our database
+ const handleSaveBook = async (bookId) => {
+  // Find the book in `searchedBooks` state by the matching id
+  const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
+  // Get the user's token
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    if (!token) {
-      return false;
-    }
+  if (!token) {
+    return false;
+  }
 
-    try {
-      const response = await saveBook(bookToSave, token);
+  try {
+    // Perform the saveBook mutation and extract the saved book ID
+    const { data } = await saveBook({
+      variables: { bookData: bookToSave },
+    });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+    const savedBookId = data.saveBook._id;
 
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    // Update the state with the saved book ID
+    setSavedBookIds([...savedBookIds, savedBookId]);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-  return (
-    <>
-      <div className="text-light bg-dark p-5">
-        <Container>
-          <h1>Search for Books!</h1>
-          <Form onSubmit={handleFormSubmit}>
-            <Row>
-              <Col xs={12} md={8}>
-                <Form.Control
-                  name='searchInput'
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  type='text'
-                  size='lg'
-                  placeholder='Search for a book'
-                />
-              </Col>
-              <Col xs={12} md={4}>
-                <Button type='submit' variant='success' size='lg'>
-                  Submit Search
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </Container>
-      </div>
+return (
+  <>
+    <div className="text-light bg-dark p-5">
+      <Container>
+        <h1>Search for Books!</h1>
+        <Form onSubmit={handleFormSubmit}>
+          <Row>
+            <Col xs={12} md={8}>
+              <Form.Control
+                name='searchInput'
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                type='text'
+                size='lg'
+                placeholder='Search for a book'
+              />
+            </Col>
+            <Col xs={12} md={4}>
+              <Button type='submit' variant='success' size='lg'>
+                Submit Search
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+      </Container>
+    </div>
 
       <Container>
         <h2 className='pt-5'>
