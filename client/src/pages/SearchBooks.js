@@ -25,4 +25,37 @@ const SearchBooks = () => {
 
   // Create a state to store the IDs of saved books
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
-};
+  // Set up a useEffect hook to save the `savedBookIds` list to local storage when the component unmounts.
+  // For more details, check out the official React documentation on useEffect with cleanup: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
+  useEffect(() => {
+    return () => saveBookIds(savedBookIds);
+  });
+
+  // Create a method to search for books and update the component state when the form is submitted.
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+
+    // Check if the search input is empty and return early if so.
+    if (!searchInput) {
+      return false;
+    }
+
+    try {
+      // Send a request to the Google Books API to search for books based on the search input.
+      const response = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=${searchInput}`
+      );
+
+      // Check if the response is not okay (HTTP status code indicates an error).
+      if (!response.ok) {
+        throw new Error('Something went wrong!');
+      }
+
+      // Parse the response JSON and extract the 'items' data.
+      const { items } = await response.json();
+      // Rest of your code...
+    } catch (error) {
+      // Handle errors in case of network issues or other problems.
+      console.error('Error:', error);
+    }
+  };
