@@ -7,7 +7,7 @@ const db = require('./config/connection'); // database connection setup
 
 const {authMiddleware} = require('./utils/auth'); // importing the middleware 
 
-const { typeDefs, resolvers } = require('./schemas'); // Import your GraphQL schema type definition and resolvers
+const { typeDefs, resolvers } = require('./Schemas'); // Import your GraphQL schema type definition and resolvers
 
 // Create an Express.js application instance
 const app = express();
