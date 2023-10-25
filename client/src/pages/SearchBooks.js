@@ -25,7 +25,8 @@ const SearchBooks = () => {
   const [saveBook, {error}] = useMutation(SAVE_BOOK);
 
   // Use the effect to save `savedBookIds` list to localStorage when it changes
-  useEffect(() => { return () => saveBookIds(savedBookIds);
+  useEffect(() => 
+  { return () => saveBookIds(savedBookIds);
   });
 
   // Create method to search for books and set state on form submit
@@ -73,7 +74,7 @@ const SearchBooks = () => {
 
     try {
       const { data } = await saveBook({
-        variables: { book: bookToSave },
+        variables: { bookData: bookToSave },
       });
 
       setSavedBookIds([...savedBookIds, bookToSave.bookId]);
@@ -118,7 +119,7 @@ const SearchBooks = () => {
         <Row>
           {searchedBooks.map((book) => {
             return (
-              <Col md="4">
+              <Col className={"4"}>
                 <Card key={book.bookId} border='dark'>
                   {book.image ? (
                     <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />

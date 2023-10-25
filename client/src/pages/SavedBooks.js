@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 // Removed unused import statement
 import {
   Container,
@@ -54,14 +55,14 @@ const SavedBooks = () => {
 
   return (
     <>
-    <div fluid="true" className="text-light bg-dark p-5">
+    <div fluid="true" className={"text-light bg-dark p-5"}>
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
       </div>
       <Container>
       {/* Display the title with the number of saved books (if any) */}
-      <h2 className="pt-5">
+      <h2 className={"pt-5"}>
           {userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
@@ -71,8 +72,8 @@ const SavedBooks = () => {
         <Row>
           {userData.savedBooks.map((book) => {
             return (
-              <Col md="4">
-                <Card key={book.bookId} border="dark">
+              <Col className={'md=4'}>
+                <Card key={book.bookId} className={'border = dark'}>
                   {book.image ? (
                     <Card.Img
                       src={book.image}
@@ -82,11 +83,11 @@ const SavedBooks = () => {
                   ) : null}
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
-                <p className='small'>Authors: {book.authors}</p>
+                <p className={'small'}>Authors: {book.authors}</p>
                 <Card.Text>{book.description}</Card.Text>
                 {/* Add a button to delete the book */}
                 <Button
-                      className="btn-block btn-danger"
+                      className={"btn-block btn-danger"}
                       onClick={() => handleDeleteBook(book.bookId)}
                     >
                       Delete this Book!

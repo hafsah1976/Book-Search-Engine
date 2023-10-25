@@ -13,16 +13,13 @@ const resolvers = {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (context.user) {
           // Retrieve user data from the database, excluding sensitive fields
-          const userData = await User.findOne({ _id: context.user._id }).select(
-            "-__v -password"
-          );
-          return userData; // Return user data
-        }
+          const userData = await User.findOne({ _id: context.user._id });
+      
         // If not authenticated, throw an AuthenticationError
-        throw new AuthenticationError("You must be logged in!");
-      },
+        throw new AuthenticationError("You must be logged in!")
+      }
     },
-
+  },
     Mutation: {
         // Create a new user in the database
         addUser: async (parent, { username, email, password }) => {
@@ -61,19 +58,19 @@ const resolvers = {
     //first check if the user is authenticated by verifying the presence of context.user. 
     //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pushing the new book to the savedBooks array and returns the updated user data. 
     //If the user is not authenticated, it throws an AuthenticationError to indicate that the user needs to be logged in to save a book.
-    saveBook: async (parent, { bookData  }, context) => {
+    saveBook: async (parent, { bookData }, context) => {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (context.user) { 
-            // Use Mongoose's `findByIdAndUpdate` to add the new book to the user's savedBooks array
-          const updatedUser = await User.findByIdAndUpdate(
-            context.user._id,
-            { $push: { savedBooks: bookData } },
-            { new: true } // Return the updated user data
+            // Use Mongoose's `findOneAndUpdate` to add the new book to the user's savedBooks array
+          const updatedUser = await User.findOneAndUpdate(
+            {_id: context.user._id},
+            { $addToSet: { savedBooks: bookData } },
+            { new: true, runValidators:true } // Return the updated user data
           );
           return updatedUser;
         }
         // If not authenticated, throw an AuthenticationError
-        throw new AuthenticationError("You need to be logged in!");
+        throw new AuthenticationError("You need to be logged in to Save a book!");
     },
 
      //**Mutation for removing a book from user's savedbooks field**
@@ -86,14 +83,14 @@ const resolvers = {
         if (context.user) {
           // Use Mongoose's `findByIdAndUpdate` to remove the book with the given bookId from the user's savedBooks array
           const updatedUser = await User.findByIdAndUpdate(
-            context.user._id,
-            { $pull: { savedBooks: { bookId } } },
+            {_id: context.user._id},
+            { $pull: { savedBooks: { bookId: bookId } } },
             { new: true } // Return the updated user data
           );
           return updatedUser;
         }
-        // If not authenticated, throw an AuthenticationError
-        throw new AuthenticationError("Login required!");
+        // If not authenticated, throw an AuthenticationError to delete a book
+        throw new AuthenticationError("Login required to delete book!");
     },
     
 }
