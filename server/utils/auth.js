@@ -33,12 +33,17 @@ try {
 // Return the updated request object (with or without user data)
 return req;
 },
+
   //   // send to next endpoint
   //   next();
   // },
-  signToken: function ({ username, email, _id }) {
-    const payload = { username, email, _id };
 
-    return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
-  },
+ // Function for signing a new JWT with user data
+ signToken: function ({ username, email, _id }) {
+  // Create a payload object containing user data
+  const payload = { username, email, _id };
+
+  // Sign a JWT with the payload, secret key, and expiration time
+  return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+},
 };
