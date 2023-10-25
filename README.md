@@ -2,107 +2,111 @@
 
 ## Description
 
-The Book Search Engine is a MERN stack application that allows users to search for books, view book details, and save their favorite books. This application is designed to showcase how to build a full-stack web application using MongoDB, Express.js, React, and Node.js.
+The Book Search Engine is a web application that allows users to search for books, view search results, save books to their account, and manage their saved books. This project was motivated by a desire to create a useful tool for avid readers. The application solves the problem of easily searching for books, saving them, and accessing saved book information. It uses GraphQL for efficient data retrieval and management and employs JWT tokens for user authentication.
 
-![Book Search Engine Screenshot](./screenshot.png)
+[Please Click here to view the live link]()
 
-## Features
+## Table of Contents
 
-- User registration and authentication
-- Book search functionality
-- Display book details, including title, authors, description, and cover image
-- Save books to a user's profile
-- View and manage saved books
-
-## Technologies Used
-
-- MongoDB: A NoSQL database used to store user information and saved books.
-- Express.js: A Node.js web application framework used to build the backend API.
-- React: A JavaScript library for building the user interface.
-- Node.js: A JavaScript runtime used for the server-side code.
-- GraphQL: A query language for your API, and a server-side runtime for executing those queries.
-- Apollo Client: A comprehensive state management library for React applications.
-- JWT (JSON Web Tokens): Used for user authentication.
-- Bootstrap: A CSS framework used for styling the application.
-- Heroku: A cloud platform for deploying the application.
-
-## Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/your-username/book-search-engine.git
-```
-
-2. Navigate to the project directory:
-
-```bash
-cd book-search-engine
-```
-
-3. Install server dependencies:
-
-```bash
-npm install
-```
-
-4. Navigate to the client directory:
-
-```bash
-cd client
-```
-
-5. Install client dependencies:
-
-```bash
-npm install
-```
-
-6. Return to the project root:
-
-```bash
-cd ..
-```
+- [Usage](#usage)
+- [Installation](#installation)
+- [Deployment](#deployment)
+- [Credits](#credits)
+- [License](#license)
 
 ## Usage
 
-1. Create a MongoDB Atlas account and a database to store user information and saved books.
+1. Upon visiting the application, you will see a menu with the options "Search for Books" and "Login/Signup." You can use the search field to search for books by title, author, or keywords.
 
-2. Set up environment variables by creating a `.env` file in the project's root directory. Define the following variables:
+2. If you are not logged in and you enter a search term and click the submit button, you will be presented with search results, including book titles, authors, descriptions, images, and links to the Google Books site for each book.
 
-```env
-MONGODB_URI=your-mongodb-uri
-SECRET=your-secret-key
-```
+3. You can click on "Login/Signup" to open a modal that allows you to log in or sign up. When signing up, you will need to provide a username, email address, and password.
 
-3. Start the server:
+4. After signing up or logging in, the menu options will change to "Search for Books," "See Your Saved Books," and "Logout."
 
-```bash
-npm start
-```
+5. When logged in, you can enter a search term, and the results will include a "Save" button for each book. Clicking "Save" will add the book to your saved books.
 
-4. Navigate to the client directory:
+6. Click "See Your Saved Books" to view the books you have saved. You can remove a book by clicking the "Remove" button.
 
-```bash
-cd client
-```
+7. You can log out using the "Logout" button.
 
-5. Start the client:
+![Screenshot of the Google books App]()
 
-```bash
-npm start
-```
+## Installation
 
-6. Access the application in your web browser at `http://localhost:3000`.
+If you would like to see the project code on your desktop please follow the steps below, that explain how to run the project on the localhost as well.
+
+To run the Book Search Engine on your local development environment, follow these steps:
+
+1. Clone the repository to your local machine.
+
+    - git clone <https://github.com/hafsah1976/Book-Search-Engine>
+
+2. Navigate to the project directory.
+
+    - cd book-search-engine
+
+3. Install the required dependencies.
+
+    - npm install
+
+4. Start the development server.
+    - npm start
+
+The application should now be running locally at `http://localhost:3000`.
 
 ## Deployment
 
-You can deploy this MERN stack application to platforms like Heroku. Don't forget to set up environment variables for the production environment on your hosting platform.
+To deploy the Book Search Engine to Heroku with a MongoDB database using MongoDB Atlas, follow these steps:
+
+a. Create a Heroku account if you don't have one. Log in to Heroku using the Heroku CLI by running the following command and following the prompts:
+
+- heroku login
+- Navigate to your project directory.
+
+- cd book-search-engine
+
+b. Create a Procfile in your project directory. This file tells Heroku how to run your application. Inside Procfile, add the following line:
+
+- Commit your changes to Git.
+
+- git add .
+- git commit -m "Added Procfile for Heroku"
+
+c.Create a new Heroku app using the following command, replacing "your-heroku-app-name" with your desired app name:
+
+- heroku create your-heroku-app-name
+
+d. Set up a MongoDB Atlas database:
+
+1. Go to MongoDB Atlas.
+2. Create an account or log in.
+3. Click "Build a Cluster" to set up a new database.
+4. Follow the instructions to create your cluster.
+5. Once the cluster is set up, click "Connect" and select "Connect your application." Copy the connection string.
+6. In your Heroku dashboard, navigate to your app's settings and click on the "Reveal Config Vars" button. Add the following environment variables:
+
+- MONGODB_URI: Set it to the connection string from your MongoDB Atlas cluster.
+
+e. Deploy your application to Heroku:
+
+- git push heroku master
+
+Your Book Search Engine application is now deployed to Heroku. You can open it in your web browser by running:
+
+heroku open
+
+Now, your Book Search Engine application is live on Heroku with a MongoDB database hosted on MongoDB Atlas. Users can access and use your application from anywhere.
+
+## Credits
+
+This project was refactored by Hafsah Nasreen. You can find the source code on GitHub at [Book-Search-Engine](https://github.com/hafsah1976/Book-Search-Engine).
+
+This application uses the following technologies and libraries:
+
+Frontend: React, GraphQL, Apollo
+Backend: Express, JWT Tokens, MongoDB
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- This project is based on the book search engine module in the Full-Stack Coding Bootcamp.
+This project is licensed under the [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
