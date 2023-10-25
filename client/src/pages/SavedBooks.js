@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Removed unused import statement
 import {
   Container,
@@ -14,46 +16,41 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
 
-    // Use the `useQuery` hook to execute the GET_ME query and store the result in userData
-    const { loading, data: userData } = useQuery(GET_ME);
-  
-    // Initialize a mutation function and error object using the REMOVE_BOOK mutation
-    const [removeBook] = useMutation(REMOVE_BOOK);  
-    
- // Define a function that handles book deletion
+  // Use the `useQuery` hook to execute the GET_ME query and store the result in userData
+  const { loading, data: userData } = useQuery(GET_ME);
 
- const handleDeleteBook = async (bookId) => {
+  // Initialize a mutation function and error object using the REMOVE_BOOK mutation
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
-  const token = Auth.loggedIn() ? Auth.getToken() : null;
+  // Define a function that handles book deletion
+  const handleDeleteBook = async (bookId) => {
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+    if (!token) {
+      return false;
+    }
+    try {
+      const { data } = await removeBook({
+        variables: { bookId }
+      });
 
-  if (!token) {
-    return false;
+      // Log the mutation response
+      console.log(data);
+
+      // Update userData by removing the book
+      userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
+
+      // Remove the book ID from local storage
+      removeBookId(bookId);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Check for loading status, and return a loading message if true
+  if (loading) {
+    return <h2>LOADING...</h2>;
   }
 
-  try {
-    const { data } = await removeBook({
-      variables: { bookId }
-    });
-
-    // Log the mutation response
-    console.log(data);
-
-    // Update userData by removing the book
-    userData.me.savedBooks = userData.me.savedBooks.filter((book) => book.bookId !== bookId);
-
-    // Remove the book ID from local storage
-    removeBookId(bookId);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
- // Check for loading status, and return a loading message if true
- if (loading) {
-  return <h2>LOADING...</h2>;
-}
-
-const SavedBooks = ({ userData, handleDeleteBook }) => {
   return (
     <Container>
       {/* Display the title with the number of saved books (if any) */}
@@ -82,7 +79,6 @@ const SavedBooks = ({ userData, handleDeleteBook }) => {
         ))}
       </Row>
     </Container>
-    // Close the Container and component
   );
 };
 
