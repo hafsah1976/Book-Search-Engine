@@ -38,8 +38,20 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
-app.use(routes);
+// Create a new instance of an Apollo server with the GraphQL schema.
+// Applying Apollo Server to the Express app as middleware
+const startApolloServer = async (typeDefs, resolvers) => {
+  await server.start();
+  server.applyMiddleware({ app });
 
+// Open the database connection and start the server
 db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
-});
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+  })
+})
+};
+
+// Call the async function to start the server
+startApolloServer(typeDefs, resolvers);
