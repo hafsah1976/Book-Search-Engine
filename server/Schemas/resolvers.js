@@ -22,7 +22,7 @@ const resolvers = {
         throw new AuthenticationError("You must be logged in!");
       },
     },
-    
+
     Mutation: {
         // Create a new user in the database
         addUser: async (parent, { username, email, password }) => {
@@ -30,3 +30,28 @@ const resolvers = {
           const token = signToken(user); // Sign a JWT token for the new user
           return { token, user }; // Return the token and user data
         },
+
+        //the user login process
+    login: async (parent, { email, password }) => {
+        // Find the user by their email
+        const user = await User.findOne({ email });
+        
+        // If the user is not found, throw an AuthenticationError
+        if (!user) {
+          throw new AuthenticationError("No User found with this email. Please create an account to continue.");
+        }
+    
+        // Check if the provided password is correct
+        const correctPw = await user.isCorrectPassword(password);
+        
+        // If the password is incorrect, throw an AuthenticationError
+        if (!correctPw) {
+          throw new AuthenticationError("Your email or password is incorrect!");
+        }
+    
+        // Sign a JWT token for the authenticated user
+        const token = signToken(user);
+    
+        // Return the JWT token and user data
+        return { token, user };
+    },
