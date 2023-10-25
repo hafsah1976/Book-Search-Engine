@@ -55,3 +55,23 @@ const resolvers = {
         // Return the JWT token and user data
         return { token, user };
     },
+
+       //**Mutation for saving a book to user's savedbook field**
+
+    //first check if the user is authenticated by verifying the presence of context.user. 
+    //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pushing the new book to the savedBooks array and returns the updated user data. 
+    //If the user is not authenticated, it throws an AuthenticationError to indicate that the user needs to be logged in to save a book.
+    saveBook: async (parent, { bookData  }, context) => {
+        // Check if the user is authenticated (context.user will be set if authenticated)
+        if (context.user) { 
+            // Use Mongoose's `findByIdAndUpdate` to add the new book to the user's savedBooks array
+          const updatedUser = await User.findByIdAndUpdate(
+            context.user._id,
+            { $push: { savedBooks: bookData } },
+            { new: true } // Return the updated user data
+          );
+          return updatedUser;
+        }
+        // If not authenticated, throw an AuthenticationError
+        throw new AuthenticationError("You need to be logged in!");
+    },
