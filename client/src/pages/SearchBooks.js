@@ -79,3 +79,29 @@ setSearchInput('');
   // Handle any errors that occurred during book data processing.
   console.error('Error:', error);
 }
+// Define a function to handle saving a book to our database
+const handleSaveBook = async (bookId) => {
+  // Find the book in the `searchedBooks` state that matches the given bookId
+  const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
+
+  // Get the user's authentication token
+  const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+  if (!token) {
+    // If there is no authentication token, return early
+    return false;
+  }
+
+  try {
+    // Use the saveBook mutation to save the book to the user's account
+    const { data } = await saveBook({
+      variables: { book: bookToSave }
+    });
+
+    // If the book is successfully saved to the user's account, update the savedBookIds state
+    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+  } catch (error) {
+    // Handle and log any errors that occur during the saving process
+    console.error('Error:', error);
+  }
+};
