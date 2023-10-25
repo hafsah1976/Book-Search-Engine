@@ -51,3 +51,22 @@ export const ADD_USER = gql `
     }
   }
 `;
+
+export const SAVE_BOOK = gql `
+  mutation saveBook($newBook: BookInput!) {
+    saveBook(newBook: $newBook) {   // Execute the saveBook mutation with a new book input
+      _id          // Return the user's ID
+      username     // Return the user's username
+      email        // Return the user's email
+      bookCount   // User's bookCount, the number of saved books they have, should increase as user adds books
+      savedBooks { // Return an array of saved books
+        bookId    // Book's ID
+        authors   // Book's authors
+        description // Book's description
+        title     // Book's title
+        image     // Book's image
+        link      // Book's link
+      }
+    }
+  } 
+  `;
