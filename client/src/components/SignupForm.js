@@ -13,7 +13,7 @@ const SignupForm = () => {
   // Set the form validation status to false
   const [validated] = useState(false);
 
-  // Manage the visibility of alerts
+  // Manage the visibility ofalerts
   const [showAlert, setShowAlert] = useState(false);
 
    // Use the ADD_USER mutation and get the addUser function and error from useMutation
