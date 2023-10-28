@@ -109,11 +109,11 @@ const SearchBooks = () => {
   return (
     <>
       {/* Search input and form */}
-      <div className="text-light bg-dark p-5">
+      <Jumbotron fluid className="text-light bg-dark p-5">
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
-            <Row>
+            <Form.Row>
               <Col xs={12} md={8}>
                 {/* Input field for searching books */}
                 <Form.Control
@@ -131,10 +131,10 @@ const SearchBooks = () => {
                   Submit Search
                 </Button>
               </Col>
-            </Row>
+            </Form.Row>
           </Form>
         </Container>
-      </div>
+      </Jumbotron>
 
       <Container>
         <h2>
@@ -143,10 +143,10 @@ const SearchBooks = () => {
             ? `Viewing ${searchedBooks.length} results:`
             : 'Search for a book to begin'}
         </h2>
-        <Row>
-          {searchedBooks.map((book) => (
-            <Col key={book.bookId}>
-              <Card border="dark">
+        <CardColumns>
+          {searchedBooks.map((book) => {
+            return(
+              <Card key={book.bookId} border="dark">
                 {book.image ? (
                   // Display the book cover image if available
                   <Card.Img
@@ -175,9 +175,9 @@ const SearchBooks = () => {
                   )}
                 </Card.Body>
               </Card>
-            </Col>
-          ))}
-        </Row>
+            );
+                      })}
+        </CardColumns>
       </Container>
     </>
   );
