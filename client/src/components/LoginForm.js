@@ -21,7 +21,7 @@ const LoginForm = () => {
     }
 
   }, [error]);
-  
+
   // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -40,9 +40,13 @@ const handleFormSubmit = async (event) => {
 
     try {
         // Attempt to log in the user using the 'loginUser' function via the LOGIN_USER mutation
-      const { data } = await loginUser({
+      const { data } = await login({
         variables: { ...userFormData }
       });
+//adding error block
+      if(error){
+        throw new Error("Something does not look right. Please try again.")
+      }
 
  // Extract the token and user data from the API response
  Auth.login(data.login.token);
@@ -54,6 +58,7 @@ const handleFormSubmit = async (event) => {
 
 // Clear the form data
 setUserFormData({
+  username: '',
  email: '',
  password: '',
 });
