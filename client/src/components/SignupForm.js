@@ -27,7 +27,6 @@ const SignupForm = () => {
       setShowAlert(false);
     }
   }, [error]);
-  
     // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -38,7 +37,7 @@ const SignupForm = () => {
  const handleFormSubmit = async (event) => {
     event.preventDefault();
     
-    const form = event.currentTarget;
+    const form = event.target;
       // Perform client-side form validation
       if (form.checkValidity() === false) {
       event.preventDefault();
@@ -48,6 +47,9 @@ const SignupForm = () => {
           const { data } = await addUser({
             variables: { ...userFormData }
           });
+          if(error){
+throw new Error("Something went wrong! Please refresh the page and/or try again.");
+          }
     
           Auth.login(data.addUser.token); // Log in the user with the received token
         } catch (err) {
