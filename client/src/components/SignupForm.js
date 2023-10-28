@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client'; // Import useMutation from Apollo Client to execute GraphQL mutations
 // Import the ADD_USER mutation functionality
@@ -17,8 +17,17 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
    // Use the ADD_USER mutation and get the addUser function and error from useMutation
-   const [createUser] = useMutation(ADD_USER); // Initialize the ADD_USER mutation
+   const [addUser, {error}] = useMutation(ADD_USER); // Initialize the ADD_USER mutation
 
+   //adding useeffect
+   useEffect(() => {
+    if (error){
+      setShowAlert(true);
+    }else {
+      setShowAlert(false);
+    }
+  }, [error]);
+  
     // Create a function to handle changes in form inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -36,7 +45,7 @@ const SignupForm = () => {
       event.stopPropagation();
     }
         try {
-          const { data } = await createUser({
+          const { data } = await addUser({
             variables: { ...userFormData }
           });
     
