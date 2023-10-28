@@ -19,7 +19,7 @@ const SavedBooks = () => {
   const userData = data?.me || {};
   // Use the useMutation hook to define a function to remove a book from the user's savedBooks
 
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
   // Function to handle the deletion of a saved book
   const handleDeleteBook = async (bookId) => {
@@ -30,21 +30,23 @@ const SavedBooks = () => {
     }
 
     try {
-          // Upon success, remove the book's ID from local storage to keep it in sync with the Apollo Client's cache.
-          await removeBook({
-        variables: {  bookId },
+      // Use the removeBook mutation to remove the book by its ID
+      await removeBook({
+        variables: { bookId },
       });
 
-    if (error) {
+      if (error) {
+        // Handle and log any errors that occur during the book deletion process
+        console.error("Something went wrong while deleting the book. Please try again.", error);
+      }
+
+      // Upon success, remove the book's ID from local storage to keep it in sync with the server
+      removeBookId(bookId);
+    } catch (err) {
       // Handle and log any errors that occur during the book deletion process
-      throw new Error("You are not logged, please log in to delete a book.", error);
+      console.error("Something went wrong while deleting the book. Please try again.", err);
     }
-    removeBookId(bookId);
-   } catch (err) {
-    // Handle and log any errors that occur during the book deletion process
-    console.error("Something is not right, please refresh the page.", err);
-  }
-};
+  };
 
   // Check for loading status, and return a loading message if true
   if (loading) {
@@ -53,11 +55,11 @@ const SavedBooks = () => {
 
   return (
     <>
-      <div fluid className="text-light bg-dark p-5">
+      <Jumbotron fluid className="text-light bg-dark">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
-      </div>
+      </Jumbotron>
       <Container>
         {/* Display the title with the number of saved books (if any) */}
         <h2>
@@ -65,29 +67,26 @@ const SavedBooks = () => {
             ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
-        <Row>
+        <CardColumns>
           {userData.savedBooks.map((book) => {
             return (
-              <Col key={book.bookId} md={4}>
-                <Card border='dark'>
-                  {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
-                  <Card.Body>
-                    <Card.Title>{book.title}</Card.Title>
-                    <p className={'small'}>Authors: {book.authors}</p>
-                    <Card.Text>{book.description}</Card.Text>
-                    <Button
-                      className={"btn-block btn-danger"}
-                      // Call the handleDeleteBook function when the delete button is clicked
-                      onClick={() => handleDeleteBook(book.bookId)}
-                    >
-                      Delete this Book!
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
+              <Card key={book.bookId} border=''>
+                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+                <Card.Body>
+                  <Card.Title>{book.title}</Card.Title>
+                  <p className='small'>Authors: {book.authors}</p>
+                  <Card.Text>{book.description}</Card.Text>
+                  <Button
+                    className={"btn-block btn-danger"}
+                    // Call the handleDeleteBook function when the delete button is clicked
+                    onClick={() => handleDeleteBook(book.bookId)}>
+                    Delete this Book!
+                  </Button>
+                </Card.Body>
+              </Card>
             );
           })}
-        </Row>
+        </CardColumns>
       </Container>
     </>
   );
