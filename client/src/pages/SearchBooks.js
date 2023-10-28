@@ -59,8 +59,8 @@ const SearchBooks = () => {
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author available'],
         title: book.volumeInfo.title,
-        description: book.volumeInfo.description || '',
-        link: book.volumeInfo.infoLink,
+        description: book.volumeInfo.description,
+        //link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
@@ -91,33 +91,20 @@ const SearchBooks = () => {
     try {
       // Use the saveBook mutation to save a book, with the 'bookToSave' variable as the input.
       // Also, update the Apollo Client cache with the new book data.
-      await saveBook({
+      const {data} = await saveBook({
         variables: { book: bookToSave },
-        update: (cache) => {
-          // Read the current user data (me) from the Apollo Client cache using the GET_ME query.
-          const { me } = cache.readQuery({ query: GET_ME });
-
-          // Write updated data to the Apollo Client cache.
-          cache.writeQuery({
-            query: GET_ME,
-            data: {
-              // Update the 'me' data in the cache, including the 'savedBooks' array.
-              me: {
-                ...me,
-                savedBooks: [...me.savedBooks, bookToSave],
-              },
-            },
-          });
-
-          // If the book successfully saves to the user's account,
-          // save the book ID to state
-          setSavedBookIds([...savedBookIds, bookToSave.bookId]);
-        }
       });
-    } catch (err) {
-      console.error(err);
-    }
-  };
+        if (error) {
+          throw new Error("Please try again.!");
+        }
+        console.log("book", data);
+  
+        // if book successfully saves to user's account, save book id to state
+        setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
   return (
     <>
