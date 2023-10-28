@@ -15,7 +15,8 @@ const resolvers = {
           // Retrieve user data from the database, excluding sensitive fields
           const userData = await User.findOne({ _id: context.user._id })
           .select('-__v -password')
-          return userData;}
+          return userData;
+        }
       
         // If not authenticated, throw an AuthenticationError
         throw new AuthenticationError("You must be logged in!")
@@ -24,8 +25,8 @@ const resolvers = {
   },
     Mutation: {
         // Create a new user in the database
-        addUser: async (parent, { username, email, password }) => {
-          const user = await User.create({ username, email, password });
+        addUser: async (parent, args) => {
+          const user = await User.create(args);
           const token = signToken(user); // Sign a JWT token for the new user
           return { token, user }; // Return the token and user data
         },
@@ -60,13 +61,13 @@ const resolvers = {
     //first check if the user is authenticated by verifying the presence of context.user. 
     //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pushing the new book to the savedBooks array and returns the updated user data. 
     //If the user is not authenticated, it throws an AuthenticationError to indicate that the user needs to be logged in to save a book.
-    saveBook: async (parent, { book }, context) => {
+    saveBook: async (parent, { input }, {user}) => {
         // Check if the user is authenticated (context.user will be set if authenticated)
-        if (context.user) { 
+        if (user) { 
             // Use Mongoose's `findOneAndUpdate` to add the new book to the user's savedBooks array
-          const updatedUser = await User.findOneAndUpdate(
-            {_id: context.user._id},
-            { $addToSet: { savedBooks: book } },
+          const updatedUser = await User.findByIdAndUpdate(
+            {_id: user._id},
+            { $addToSet: { savedBooks: input } },
             { new: true, runValidators:true } // Return the updated user data
           );
           return updatedUser;
@@ -80,12 +81,12 @@ const resolvers = {
     //The code checks if the user is authenticated by verifying the presence of context.user.
     //If the user is authenticated, it uses User.findByIdAndUpdate to update the user's document in the database by pulling (removing) the book with the given bookId from the savedBooks array and returns the updated user data.
     //If the user is not authenticated, it throws an AuthenticationError to indicate that login is required to remove a book.
-    removeBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { bookId }, {user}) => {
         // Check if the user is authenticated (context.user will be set if authenticated)
-        if (context.user) {
+        if (user) {
           // Use Mongoose's `findByIdAndUpdate` to remove the book with the given bookId from the user's savedBooks array
           const updatedUser = await User.findOneAndUpdate(
-            {_id: context.user._id},
+            {_id: user._id},
             { $pull: { savedBooks: { bookId: bookId } } },
             { new: true } // Return the updated user data
           );
