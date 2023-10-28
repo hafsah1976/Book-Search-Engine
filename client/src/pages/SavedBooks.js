@@ -3,8 +3,8 @@ import {
   Container,
   Card,
   Button,
-  Row,
-  Col
+  Jumbotron,
+  CardColumns
 } from 'react-bootstrap';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
@@ -19,7 +19,7 @@ const SavedBooks = () => {
   const userData = data?.me || {};
   // Use the useMutation hook to define a function to remove a book from the user's savedBooks
 
-  const [deleteBook] = useMutation(REMOVE_BOOK);
+  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
 
   // Function to handle the deletion of a saved book
   const handleDeleteBook = async (bookId) => {
@@ -30,33 +30,21 @@ const SavedBooks = () => {
     }
 
     try {
-      // Use the deleteBook mutation to remove the book by its ID
-      await deleteBook({
-        variables: { bookId: bookId },
-        // Update the Apollo Client cache after a successful deletion
-        update: (cache) => {
-          // Read the user data from the cache using the GET_ME query
-          const data = cache.readQuery({ query: GET_ME });
-
-          // Extract the user's data and their savedBooks array from the cache
-          const userDataCache = data.me;
-          const savedBooksCache = userDataCache.savedBooks;
-          // Filter out the deleted book from the savedBooks array
-          const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
-
-          // Update the user's savedBooks array in the Apollo Client's cache with the filtered data
-          data.me.savedBooks = updatedBookCache;
-          // Write the updated user data (with the modified savedBooks array) back to the Apollo Client's cache using the GET_ME query.
-
           // Upon success, remove the book's ID from local storage to keep it in sync with the Apollo Client's cache.
-          removeBookId(bookId);
-        }
+          await removeBook({
+        variables: {  bookId },
       });
-    } catch (err) {
+
+    if (error) {
       // Handle and log any errors that occur during the book deletion process
-      console.error(err);
+      throw new Error("You are not logged, please log in to delete a book.", error);
     }
-  };
+    removeBookId(bookId);
+   } catch (err) {
+    // Handle and log any errors that occur during the book deletion process
+    console.error("Something is not right, please refresh the page.", err);
+  }
+};
 
   // Check for loading status, and return a loading message if true
   if (loading) {
@@ -65,7 +53,7 @@ const SavedBooks = () => {
 
   return (
     <>
-      <div fluid="true" className="text-light bg-dark p-5">
+      <div fluid className="text-light bg-dark p-5">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
