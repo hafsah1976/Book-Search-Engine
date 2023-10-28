@@ -13,40 +13,47 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(GET_ME); // Use the `useQuery` hook to execute the GET_ME query and store the result in userData
+  // Use the useQuery hook to fetch the user's data based on the GET_ME query
+  const { loading, data } = useQuery(GET_ME);
+  // Extract the user data from the fetched data, or an empty object if not available
   const userData = data?.me || {};
+  // Use the useMutation hook to define a function to remove a book from the user's savedBooks
+
   const [deleteBook] = useMutation(REMOVE_BOOK);
 
+  // Function to handle the deletion of a saved book
   const handleDeleteBook = async (bookId) => {
+    // Check if the user is logged in and get the token, or return false
     const token = Auth.loggedIn() ? Auth.getToken() : null;
     if (!token) {
       return false;
     }
 
     try {
+      // Use the deleteBook mutation to remove the book by its ID
       await deleteBook({
         variables: { bookId: bookId },
+        // Update the Apollo Client cache after a successful deletion
         update: (cache) => {
-          // Read the current user data from the cache using the GET_ME query
+          // Read the user data from the cache using the GET_ME query
           const data = cache.readQuery({ query: GET_ME });
 
           // Extract the user's data and their savedBooks array from the cache
           const userDataCache = data.me;
           const savedBooksCache = userDataCache.savedBooks;
+          // Filter out the deleted book from the savedBooks array
           const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
 
+          // Update the user's savedBooks array in the Apollo Client's cache with the filtered data
           data.me.savedBooks = updatedBookCache;
-          // Update the user's savedBooks array in the Apollo Client's cache with the filtered cache.
-
-          cache.writeQuery({ query: GET_ME, data: { data: { ...data.me.savedBooks } } });
           // Write the updated user data (with the modified savedBooks array) back to the Apollo Client's cache using the GET_ME query.
 
-          // Upon success, remove the book's id from localStorage
+          // Upon success, remove the book's ID from local storage to keep it in sync with the Apollo Client's cache.
           removeBookId(bookId);
-          // Additionally, remove the book's id from local storage to keep it in sync with the Apollo Client's cache.
         }
       });
     } catch (err) {
+      // Handle and log any errors that occur during the book deletion process
       console.error(err);
     }
   };
@@ -82,6 +89,7 @@ const SavedBooks = () => {
                     <Card.Text>{book.description}</Card.Text>
                     <Button
                       className={"btn-block btn-danger"}
+                      // Call the handleDeleteBook function when the delete button is clicked
                       onClick={() => handleDeleteBook(book.bookId)}
                     >
                       Delete this Book!
