@@ -5,6 +5,7 @@ import {
   Form,
   Button,
   Card,
+  CardColumns,
   Row,
 } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
@@ -16,13 +17,13 @@ import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
   // Create a mutation function for saving books
-  const [saveBook] = useMutation(SAVE_BOOK);
+  const [saveBook, {error}] = useMutation(SAVE_BOOK);
 
   // Create a state to store data returned from the Google API
   const [searchedBooks, setSearchedBooks] = useState([]);
 
   // Create a state to store the data entered in the search field
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState(getSavedBookIds());
 
   // Create a state to store the IDs of saved books
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
