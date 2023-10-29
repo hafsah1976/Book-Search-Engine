@@ -58,7 +58,6 @@ const handleFormSubmit = async (event) => {
 
 // Clear the form data
 setUserFormData({
-  username: '',
  email: '',
  password: '',
 });

@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import {
   Container,
@@ -78,7 +77,7 @@ const SavedBooks = () => {
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
                   <Button
-                    className={"btn-block btn-danger"}
+                    className="btn-block btn-danger"
                     // Call the handleDeleteBook function when the delete button is clicked
                     onClick={() => handleDeleteBook(book.bookId)}>
                     Delete this Book!

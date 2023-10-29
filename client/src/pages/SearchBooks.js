@@ -100,14 +100,12 @@ const SearchBooks = () => {
 
   return (
     <>
-      {/* Search input and form */}
-      <div fluid className="text-light bg-dark p-5">
+      <div className="text-light bg-dark p-5">
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
             <Row>
-              <Col xs={12} md={8}>
-                {/* Input field for searching books */}
+              <Col md={8}>
                 <Form.Control
                   name="searchInput"
                   value={searchInput}
@@ -117,8 +115,7 @@ const SearchBooks = () => {
                   placeholder="Search for a book"
                 />
               </Col>
-              <Col xs={12} md={4}>
-                {/* Submit button for initiating the search */}
+              <Col md={4}>
                 <Button type="submit" variant="success" size="lg">
                   Submit Search
                 </Button>
@@ -129,49 +126,40 @@ const SearchBooks = () => {
       </div>
       <Container>
         <h2>
-          {/* Display search results count */}
           {searchedBooks.length
             ? `Viewing ${searchedBooks.length} results:`
             : "Search for a book to begin"}
         </h2>
         <Row>
-          {searchedBooks.map((book) => {
-            return (
-              <Col key={book.bookId}>
-                <Card border="dark">
-                  {book.image ? (
-                    // Display the book cover image if available
-                    <Card.Img
-                      src={book.image}
-                      alt={`The cover for ${book.title}`}
-                      variant="top"
-                    />
-                  ) : null}
-                  <Card.Body>
-                    <Card.Title>{book.title}</Card.Title>
-                    <p className="small">Authors: {book.authors}</p>
-                    <Card.Text>{book.description}</Card.Text>
-                    {Auth.loggedIn() && (
-                      <Button
-                        // Disable the save button if the book is already saved
-                        disabled={savedBookIds?.some(
-                          (savedBookId) => savedBookId === book.bookId
-                        )}
-                        className="btn-block btn-info"
-                        onClick={() => handleSaveBook(book.bookId)}
-                      >
-                        {savedBookIds?.some(
-                          (savedBookId) => savedBookId === book.bookId
-                        )
-                          ? "This book has already been saved!"
-                          : "Save this Book!"}
-                      </Button>
-                    )}
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
+          {searchedBooks.map((book) => (
+            <Col md={4} key={book.bookId}>
+              <Card border="dark">
+                {book.image && (
+                  <Card.Img
+                    src={book.image}
+                    alt={`The cover for ${book.title}`}
+                    variant="top"
+                  />
+                )}
+                <Card.Body>
+                  <Card.Title>{book.title}</Card.Title>
+                  <p className="small">Authors: {book.authors}</p>
+                  <Card.Text>{book.description}</Card.Text>
+                  {savedBookIds && (
+                    <Button
+                      disabled={savedBookIds.includes(book.bookId)}
+                      className="btn-block btn-info"
+                      onClick={() => handleSaveBook(book.bookId)}
+                    >
+                      {savedBookIds.includes(book.bookId)
+                        ? "This book has already been saved!"
+                        : "Save this Book!"}
+                    </Button>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
       </Container>
     </>

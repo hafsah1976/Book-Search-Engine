@@ -1,6 +1,7 @@
 // Function to get the logged-in user's information from the server (requires a token)
 export const getMe = (token) => {
   return fetch('/api/users/me', {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`, // Include the token in the headers for authentication
@@ -9,7 +10,7 @@ export const getMe = (token) => {
 };
 
 // Function to create a new user by sending user data to the server
-export const createUser = (userData) => {
+export const addUser = (userData) => {
   return fetch('/api/users', {
     method: 'POST', // Use POST method for creating a new user
     headers: {
@@ -20,7 +21,7 @@ export const createUser = (userData) => {
 };
 
 // Function to log in a user by sending login credentials to the server
-export const loginUser = (userData) => {
+export const login = (userData) => {
   return fetch('/api/users/login', {
     method: 'POST', // Use POST method for user login
     headers: {
@@ -43,7 +44,7 @@ export const saveBook = (bookData, token) => {
 };
 
 // Function to remove saved book data for a logged-in user
-export const deleteBook = (bookId, token) => {
+export const removeBook = (bookId, token) => {
   return fetch(`/api/users/books/${bookId}`, {
     method: 'DELETE', // Use DELETE method to remove a saved book
     headers: {

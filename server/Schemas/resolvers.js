@@ -2,7 +2,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 
 // for user data, allowing you to query and interact with the user data stored in your database.
-const { User, Book } = require("../models");
+const { User } = require("../models");
 
 //function that signs JSON Web Tokens (JWTs), which are used for user authentication and authorization in your GraphQL server.
 const { signToken } = require("../utils/auth");
@@ -84,11 +84,10 @@ const resolvers = {
     removeBook: async (parent, { bookId }, {user}) => {
         // Check if the user is authenticated (context.user will be set if authenticated)
         if (user) {
-          // Use Mongoose's `findByIdAndUpdate` to remove the book with the given bookId from the user's savedBooks array
-          const updatedUser = await User.findOneAndUpdate(
+          // Use Mongoose's `Update` to remove the book with the given bookId from the user's savedBooks array
+          const updatedUser = await User.update(
             {_id: user._id},
             { $pull: { savedBooks: { bookId: bookId } } },
-            { new: true } // Return the updated user data
           );
           return updatedUser;
         }

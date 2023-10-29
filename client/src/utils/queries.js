@@ -1,4 +1,5 @@
-import { gql } from "@apollo/client";
+import "@apollo/client";
+import { gql } from 'graphql-tag';
 
 export const GET_ME = gql`
   {
