@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
@@ -8,21 +7,15 @@ import Auth from "../utils/auth";
 const SignupForm = () => {
   // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
+
   // set state for form validation
-  const [validated] = useState(false);
+  const [validated, setValidated] = useState(false);
+
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  const [addUser, { error }] = useMutation(ADD_USER);
+  const [addUser] = useMutation(ADD_USER);
 
-  useEffect(() => {
-    if (error) {
-      setShowAlert(true);
-    } else {
-      setShowAlert(false);
-    }
-  }, [error]);
-  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
@@ -30,42 +23,38 @@ const SignupForm = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-
-    // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
+  
+    const form = event.target;
     if (form.checkValidity() === false) {
-      event.preventDefault();
       event.stopPropagation();
     }
-
-    try {
-      const { data } = await addUser({
-        variables: { ...userFormData },
-      });
-
-      if (error) {
-        throw new Error("something went wrong!");
+  
+    setValidated(true);
+  
+    if (form.checkValidity() === true) {
+      try {
+        const { data } = await addUser({
+          variables: { ...userFormData },
+        });
+  
+        if (!data.addUser) {
+          throw new Error("Something went wrong!");
+        }
+  
+        console.log(data.user);
+        Auth.login(data.addUser.token);
+  
+        setUserFormData({ username: '', email: '', password: '' });
+      } catch (err) {
+        console.error(err);
+        setShowAlert(true);
       }
-
-      console.log(data.user);
-      Auth.login(data.addUser.token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
     }
-
-    setUserFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
   };
-
+    
   return (
     <>
-      {/* This is needed for the validation functionality above */}
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        {/* show alert if server response is bad */}
+      <Form  validated={validated} onSubmit={handleFormSubmit}>
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!
         </Alert>
@@ -108,10 +97,12 @@ const SignupForm = () => {
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
+
         <Button
           disabled={!(userFormData.username && userFormData.email && userFormData.password)}
           type='submit'
-          variant='success'>
+          variant='success'
+        >
           Submit
         </Button>
       </Form>

@@ -13,7 +13,8 @@ const {
 const { authMiddleware } = require('../../utils/auth');
 
 // Define the routes and associate them with the appropriate controller methods
-router.route('/').post(addUser).put(authMiddleware, saveBook);
+router.route('/').post(addUser)
+.put(authMiddleware, saveBook);
 // - POST: Create a new user
 // - PUT: Save a book to the user's profile (protected by authMiddleware)
 
