@@ -53,18 +53,20 @@ const resolvers = {
 
     removeBook: async (parent, { bookId }, { user }) => {
       if (user) {
-        const updatedUser = await User.findOneAndUpdate(
-          { _id: user._id },
-          { $pull: { savedBooks: { bookId: bookId } } },
-          { new: true, runValidators: true }
-        );
-
-        return updatedUser;
+        try{ 
+          const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            { $pull: { savedBooks: { bookId: bookId } } },
+            { new: true }
+          ).populate("savedBooks");
+          return updatedUser;
+        } catch (error) {
+          throw new AuthenticationError("Failed to remove book");
+        }
       }
-
       throw new AuthenticationError("Login required to delete a book!");
-    }
+    },
   }
-};
+  };
 
 module.exports = resolvers;
