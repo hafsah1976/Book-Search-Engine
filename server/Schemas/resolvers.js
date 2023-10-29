@@ -33,6 +33,7 @@ const { signToken } = require("../utils/auth");
       },
 
     login: async (parent, { email, password }) => {
+      try {
       // Find the user by their email
       const user = await User.findOne({ email });
 
@@ -51,7 +52,10 @@ const { signToken } = require("../utils/auth");
 
       const token = signToken(user); // Sign a JWT token for the authenticated user
       return { token, user }; // Return the JWT token and user data
-    },
+    } catch (error) {
+      throw new AuthenticationError("Failed to login");// throw error if login fails
+    }
+  },
 
     saveBook: async (parent, { input }, { user }) => {
       if (user) {
