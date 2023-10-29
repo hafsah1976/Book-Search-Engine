@@ -20,15 +20,17 @@ const { signToken } = require("../utils/auth");
        throw new AuthenticationError("You must be logged in!");
       },
     },
-  
-
-  Mutation: {
-    addUser: async (parent, args) => {
-      // Create a new user in the database
-      const user = await User.create(args);
-      const token = signToken(user); // Sign a JWT token for the new user
-      return { token, user }; // Return the token and user data
-    },
+    Mutation: {
+      addUser: async (parent, args) => {
+        try {
+           // Create a new user in the database
+          const user = await User.create(args);
+          const token = signToken(user);// Sign a JWT token for the new user
+          return { token, user };// Return the token and user data
+        } catch (error) {
+          throw new AuthenticationError("Failed to create user");//throw error is sign up fails
+        }
+      },
 
     login: async (parent, { email, password }) => {
       // Find the user by their email
