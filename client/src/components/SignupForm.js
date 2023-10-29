@@ -5,26 +5,29 @@ import { ADD_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
 
 const SignupForm = () => {
-  // set initial form state
+  // Set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
 
-  // set state for form validation
+  // Set state for form validation
   const [validated, setValidated] = useState(false);
 
-  // set state for alert
+  // Set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  // Use the useMutation hook to execute the ADD_USER mutation
   const [addUser] = useMutation(ADD_USER);
 
+  // Function to handle input changes
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  // Function to handle form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
   
-    const form = event.target;
+    const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.stopPropagation();
     }
@@ -33,20 +36,21 @@ const SignupForm = () => {
   
     if (form.checkValidity() === true) {
       try {
+        // Execute the ADD_USER mutation with user data
         const { data } = await addUser({
           variables: { ...userFormData },
         });
-  
-        if (!data.addUser) {
-          throw new Error("Something went wrong!");
-        }
-  
-        console.log(data.user);
+
+        // Log in the user by storing the token in local storage
         Auth.login(data.addUser.token);
-  
+
+        // Clear the form and hide any previous alerts
         setUserFormData({ username: '', email: '', password: '' });
+        setShowAlert(false);
+  
       } catch (err) {
         console.error(err);
+        // Show an alert in case of an error
         setShowAlert(true);
       }
     }
@@ -54,9 +58,9 @@ const SignupForm = () => {
     
   return (
     <>
-      <Form  validated={validated} onSubmit={handleFormSubmit}>
+      <Form validated={validated} onSubmit={handleFormSubmit}>
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-          Something went wrong with your signup!
+          {error ? "Something went wrong with your signup!" : null}
         </Alert>
 
         <Form.Group>

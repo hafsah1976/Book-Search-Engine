@@ -22,7 +22,7 @@ const SearchBooks = () => {
   // Set up a useEffect hook to save the `savedBookIds` list to local storage when the component unmounts.
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
-  });
+  }, [savedBookIds]);
 
   // Create a method to search for books and update the component state when the form is submitted.
   const handleFormSubmit = async (event) => {
@@ -51,7 +51,6 @@ const SearchBooks = () => {
         authors: book.volumeInfo.authors || ["No author available"],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
-        //link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || "",
       }));
 
@@ -60,36 +59,48 @@ const SearchBooks = () => {
 
       // Clear the search input field after processing the search.
       setSearchInput("");
+      
     } catch (error) {
+
       // Handle errors in case of network issues or other problems.
-      console.error("Error:", error);
+      console.error("Internal Server Error", error);
     }
   };
 
-  // Define a function to handle saving a book to our database
+  // Create a function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
-  // Find the book in the `searchedBooks` state that matches the given bookId
+    // Find the book in the `searchedBooks` state that matches the given bookId
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    const token = Auth.loggedIn() ? Auth.getToken() : null;    // Get the user's authentication token
+
+    // Get the user's authentication token
+    const token = Auth.loggedIn() ? Auth.getToken() : null;
+
+    // If there is no authentication token, return early
     if (!token) {
-      return false;      // If there is no authentication token, return early
+      return false;
     }
+
     try {
       // Use the saveBook mutation to save a book, with the 'bookToSave' variable as the input.
       // Also, update the Apollo Client cache with the new book data.
       const { data } = await saveBook({
-        variables: { book: bookToSave },
+        variables: { input: bookToSave },
       });
+
+      // Check for errors in the mutation response
       if (error) {
         throw new Error("Please try again!");
       }
-      console.log("book", data);
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]); // if book successfully saves to user's account, save book id to state
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
+      console.log("book", data);
+
+      // Update the saved book IDs with the new book ID
+      setSavedBookIds([...getSavedBookIds(), data.saveBook._id]);
+
+    } catch (err) {
+      console.error("Unable to save a book. Please try refreshing the page.", err);
+    }
+  
   return (
     <>
       <div className="text-light bg-dark p-5">
@@ -157,5 +168,5 @@ const SearchBooks = () => {
     </>
   );
 };
-
+};
 export default SearchBooks;

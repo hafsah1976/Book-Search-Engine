@@ -7,10 +7,12 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
+  // Use the useQuery hook to fetch user data based on the GET_ME query
   const { loading, data } = useQuery(GET_ME);
   const userData = data?.me || {};
   const [removeBook] = useMutation(REMOVE_BOOK);
 
+  // Function to handle deleting a book
   const handleDeleteBook = async (bookId) => {
     const token = Auth.getToken();
     if (!token) {
@@ -18,16 +20,18 @@ const SavedBooks = () => {
     }
 
     try {
+      // Use the removeBook mutation to delete the book
       await removeBook({
         variables: { bookId },
       });
 
+      // Remove the book from local storage
       removeBookId(bookId);
     } catch (err) {
       console.error("Something went wrong while deleting the book. Please try again.", err);
     }
   };
-
+//conditional rendering of component
   if (loading) {
     return <h2>LOADING...</h2>;
   }
