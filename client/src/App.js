@@ -1,17 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-
-import { 
-  ApolloProvider, 
-  ApolloClient,
-createHttpLink,
-InMemoryCache } from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
+import { ApolloProvider,  ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
+import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
 
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
   
-import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
 
 //This code sets up an Apollo Client with authentication handling by using the setContext function. 
 //It adds the token from local storage to the request headers before making a request to the GraphQL API.

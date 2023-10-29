@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Container, Col, Form, Button, Card, Row } from "react-bootstrap";
 import { useMutation } from "@apollo/client";
 import { SAVE_BOOK } from "../utils/mutations";
-//import { GET_ME } from '../utils/queries';
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
@@ -69,17 +68,12 @@ const SearchBooks = () => {
 
   // Define a function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
-    // Find the book in the `searchedBooks` state that matches the given bookId
+  // Find the book in the `searchedBooks` state that matches the given bookId
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-
-    // Get the user's authentication token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+    const token = Auth.loggedIn() ? Auth.getToken() : null;    // Get the user's authentication token
     if (!token) {
-      // If there is no authentication token, return early
-      return false;
+      return false;      // If there is no authentication token, return early
     }
-
     try {
       // Use the saveBook mutation to save a book, with the 'bookToSave' variable as the input.
       // Also, update the Apollo Client cache with the new book data.
@@ -87,12 +81,10 @@ const SearchBooks = () => {
         variables: { book: bookToSave },
       });
       if (error) {
-        throw new Error("Please try again.!");
+        throw new Error("Please try again!");
       }
       console.log("book", data);
-
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]); // if book successfully saves to user's account, save book id to state
     } catch (err) {
       console.error(err);
     }
