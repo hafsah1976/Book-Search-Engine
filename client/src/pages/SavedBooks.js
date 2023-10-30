@@ -33,7 +33,7 @@ const SavedBooks = () => {
         update: (cache) => {
           // Fetch the existing user data from the cache
           const data = cache.readQuery({ query: GET_ME });
-          
+        
           // Extract the savedBooks array from the user data
           const userDataCache = data.me;
           const savedBooksCache = userDataCache.savedBooks;
@@ -47,6 +47,7 @@ const SavedBooks = () => {
           // Write the updated user data back to the cache
           cache.writeQuery({ query: GET_ME, data: { data: { ...data.me.savedBooks } } });
         }
+      
       });
           // if (error) {
       //   throw new Error('Something went wrong! ' + error.message);
