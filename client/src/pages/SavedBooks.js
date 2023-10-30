@@ -12,8 +12,15 @@ const SavedBooks = () => {
   const userData = data?.me || {};
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
+  //adding error handling for accessing saved books
+  if(!userData?.username){
+    return (
+      <h3>You must be logged in to access saved books. Please log in or sign up.</h3>
+    );
+  }
+
   // Function to handle deleting a book
-  const handleDeleteBook = async (bookId) => {
+  const handleRemoveBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
     if (!token) {
@@ -23,14 +30,21 @@ const SavedBooks = () => {
     try {
       // Use the removeBook mutation to delete the book
       await removeBook({
-        variables: { bookId },
-      });
+        variables: { bookId: bookId },
+        update: cache => {
+          const data = cache.readyQuery ({query: GET_ME});
+          const userDataCache= data.me;
+          const savedBooksCache = userDataCache.savedBooks;
+          const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId); 
+        data.me.savedBooks = updatedBookCache;
+        cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})      
+    }
+  });
+      // if (error) {
+      //   throw new Error('Something went wrong! ' + error.message);
+      // }
 
-      if (error) {
-        throw new Error('Something went wrong! ' + error.message);
-      }
-
-      // Remove the book from local storage
+      // when successfully logged in or signed up, remove the book from local storage
       removeBookId(bookId);
     } catch (error) {
       console.error("Something went wrong while deleting the book. Please try again.", error);
