@@ -17,7 +17,6 @@ export const saveBookIds = (bookIdArr) => {
     // If the array is empty, remove the saved_books entry from local storage
     localStorage.removeItem('saved_books');
   }
-  return saveBookIds;
 };
 
 // Function to remove a book ID from local storage

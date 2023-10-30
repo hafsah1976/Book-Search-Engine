@@ -10,12 +10,12 @@ const SavedBooks = () => {
   // Use the useQuery hook to fetch user data based on the GET_ME query
   const { loading, data } = useQuery(GET_ME);
   const userData = data?.me || {};
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
   // Function to handle deleting a book
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    
+
     if (!token) {
       return false;
     }
@@ -27,9 +27,10 @@ const SavedBooks = () => {
       });
 
       if (error) {
-        throw new Error('Something went wrong!' + error.message);
-      // Remove the book from local storage
+        throw new Error('Something went wrong! ' + error.message);
       }
+
+      // Remove the book from local storage
       removeBookId(bookId);
     } catch (error) {
       console.error("Something went wrong while deleting the book. Please try again.", error);
@@ -53,14 +54,16 @@ const SavedBooks = () => {
           {userData.savedBooks && userData.savedBooks.length
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? 'book' : 'books'
-              }:`
+              }:` // Added closing bracket here
             : 'You have no saved books!'}
         </h2>
         <Row>
-          {userData.savedBooks.map((book) =>{
-            return (
-              <Col key={book.bookId} border="dark">
-                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant="top" /> : null}
+          {userData.savedBooks && userData.savedBooks.length > 0 ? (
+            userData.savedBooks.map((book) => (
+              <Col key={book.bookId} border="dark"> {/* Removed the extra parentheses */}
+                {book.image ? (
+                  <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant="top" />
+                ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
                   <p className="small">Authors: {book.authors}</p>
@@ -73,8 +76,11 @@ const SavedBooks = () => {
                   </Button>
                 </Card.Body>
               </Col>
-            );
-          })}
+            ))
+          ) : (
+            // Placeholder for what you want to display when there are no saved books
+            <p>No saved books found.</p>
+          )}
         </Row>
       </Container>
     </>

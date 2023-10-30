@@ -1,7 +1,6 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../models");
 const { signToken } = require("../utils/auth");
-const { ObjectId } = require('mongoose').Types;
 
 const resolvers = {
   Query: {
@@ -10,16 +9,15 @@ const resolvers = {
       if (context.user) {
         try {
           //find user by id
-          const user = await User.findById(context.user._id).select('-__v -password');
+          const user = await User.findOne({_id: context.user._id})
+          .select('-__v -password');
           return user;
         } catch (error) {
           // If there's an error during data retrieval, throw an AuthenticationError
-          throw new AuthenticationError("Failed to fetch user");
+          throw new AuthenticationError("You must be logged in to continue.");
         }
       }
-      // If not authenticated, throw an AuthenticationError
-      throw new AuthenticationError("You must be logged in!");
-    },
+    }
   },
   Mutation: {
     addUser: async (parent, args) => {
@@ -60,46 +58,45 @@ const resolvers = {
       }
     },
 
-    saveBook: async (parent, { input }, context) => {
+    saveBook: async (parent, { book }, context) => {
       try {
         // Check if the user is authenticated (logged in)
         if (context.user) {
           // If the user is authenticated, update their document to add the book to savedBooks
           const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id }, // Find the user by their unique ID
-            { $addToSet: { savedBooks: input } }, // Add the book to the savedBooks array (no duplicates)
-            { new: true, runValidators: true } // Return the updated user with validation checks
-          ).populate("savedBooks"); // Populate the 'savedBooks' field for a full response, including book details
+            { $addToSet: { savedBooks: book } }, // Add the book to the savedBooks array (no duplicates)
+            { new: true } // Return the updated user with validation checks
+          ); // Populate the 'savedBooks' field for a full response, including book details
           return updatedUser; // Return the updated user with the saved book
-        } else {
-          // If the user is not authenticated, throw an authentication error
-          throw new AuthenticationError("You must be logged in to save books");
-        }
+        } 
+        //   // If the user is not authenticated, throw an authentication error
+        //   throw new AuthenticationError("You must be logged in to save books");
+        // }
       } catch (error) {
         // If an error occurs during the process, throw a custom error message
-        throw new Error("Failed to save book: " + error.message);
+    throw new AuthenticationError("You must be logged in to save books");
+
       }
     },
             
-    removeBook: async (parent, { bookId }, {user}) => {
-      if (user) {
+    removeBook: async (parent, { bookId }, context) => {
+      if (context.user) {
         try {
           // Remove a book from the user's savedBooks array by bookId
-          const updatedUser = await User.findByIdAndUpdate(
-            {_id: user._id},
+          const updatedUser = await User.findByOneAndUpdate(
+            {_id: context.user._id},
             { $pull: { savedBooks: { bookId: bookId } } },
-            { new: true, runValidators:true }
-          ).populate("savedBooks"); // Populate the 'savedBooks' field for a full response
+            { new: true} 
+          )
           return updatedUser;
         } catch (error) {
           // Handle errors when removing the book
-          throw new AuthenticationError("Failed to remove book");
+          throw new AuthenticationError("Login required to delete a book!");
         }
       }
-      // If not authenticated, throw an AuthenticationError
-      throw new AuthenticationError("Login required to delete a book!");
-    },
-  },
+  }
+}
 };
 
 module.exports = resolvers;
