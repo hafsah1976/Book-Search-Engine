@@ -1,10 +1,13 @@
 // Import required modules and dependencies
+require('dotenv').config({ path: '../.env' });//confidenttial variables
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
 const app = express();
+//const { gql } = require('graphql');
+const {authMiddleware}= require('./utils/auth');
 
 // Define the port on which the server should listen, using the provided PORT or defaulting to 3001
 const PORT = process.env.PORT || 3001;
@@ -21,7 +24,9 @@ if (process.env.NODE_ENV === 'production') {
 // Create an Apollo Server instance with your GraphQL schema and resolvers
 const server = new ApolloServer({
   typeDefs, // GraphQL schema definition
-  resolvers, // GraphQL resolvers
+  resolvers,// GraphQL resolvers
+  context: authMiddleware,
+ // gql, 
 });
 
 // Start the Apollo Server and apply it as middleware to the Express app
@@ -29,7 +34,9 @@ server.start().then(() => {
   server.applyMiddleware({ app });
 });
 
-// Open the database connection and start the Express server
 db.once('open', () => {
-  app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
+  app.listen(PORT, async () => {
+    console.log(`🌍 Now listening on localhost:${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+  })
 });

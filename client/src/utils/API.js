@@ -10,7 +10,7 @@ export const getMe = (token) => {
 };
 
 // Function to create a new user by sending user data to the server
-export const addUser = (userData) => {
+export const createUser = (userData) => {
   return fetch('/api/users', {
     method: 'POST', // Use POST method for creating a new user
     headers: {
@@ -21,7 +21,7 @@ export const addUser = (userData) => {
 };
 
 // Function to log in a user by sending login credentials to the server
-export const login = (userData) => {
+export const loginUser = (userData) => {
   return fetch('/api/users/login', {
     method: 'POST', // Use POST method for user login
     headers: {
@@ -44,7 +44,7 @@ export const saveBook = (bookData, token) => {
 };
 
 // Function to remove saved book data for a logged-in user
-export const removeBook = (bookId, token) => {
+export const deleteBook = (bookId, token) => {
   return fetch(`/api/users/books/${bookId}`, {
     method: 'DELETE', // Use DELETE method to remove a saved book
     headers: {

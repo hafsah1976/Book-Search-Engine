@@ -1,106 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { Container, Col, Form, Button, Card, Row } from "react-bootstrap";
-import { useMutation } from "@apollo/client";
-import { SAVE_BOOK } from "../utils/mutations";
-import Auth from "../utils/auth";
-import { searchGoogleBooks } from "../utils/API";
-import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
+import { useState, useEffect } from 'react';
+import { Container, Col, Form, Button, Card, Row } from 'react-bootstrap';
+import Auth from '../utils/auth';
+import { useMutation } from '@apollo/client';
+import { SAVE_BOOK } from '../utils/mutations';
+import { searchGoogleBooks } from '../utils/API';
+import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
-  // Create a mutation function for saving books
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);
-
-  // Create a state to store data returned from the Google API
   const [searchedBooks, setSearchedBooks] = useState([]);
-
-  // Create a state to store the data entered in the search field
-  const [searchInput, setSearchInput] = useState(getSavedBookIds());
-
-  // Create a state to store the IDs of saved books
+  const [searchInput, setSearchInput] = useState('');
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  // Set up a useEffect hook to save the `savedBookIds` list to local storage when the component unmounts.
   useEffect(() => {
-    return () => saveBookIds(savedBookIds);
-  }, [savedBookIds]);
+    // This effect runs when the component unmounts
+    return () => {
+      // Save the updated `savedBookIds` array to `localStorage`
+      saveBookIds(savedBookIds);
+    };
+  }, [savedBookIds]); // Empty dependency array to run the effect only on unmount
+  
+  const [saveBook, {error}] = useMutation(SAVE_BOOK);
 
-  // Create a method to search for books and update the component state when the form is submitted.
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
-    // Check if the search input is empty and return early if so.
     if (!searchInput) {
       return false;
     }
 
     try {
-      // Send a request to the Google Books API to search for books based on the search input.
       const response = await searchGoogleBooks(searchInput);
 
-      // Check if the response is not okay (HTTP status code indicates an error).
       if (!response.ok) {
-        throw new Error("Something went wrong!");
+        throw new Error('Something went wrong!');
       }
 
-      // Parse the response JSON and extract the 'items' data.
       const { items } = await response.json();
 
-      // Map the fetched book data to a new format and set the component state.
       const bookData = items.map((book) => ({
         bookId: book.id,
-        authors: book.volumeInfo.authors || ["No author available"],
+        authors: book.volumeInfo.authors || ['No author to display'],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
-        image: book.volumeInfo.imageLinks?.thumbnail || "",
+        image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
-      // Update the state with the formatted book data.
       setSearchedBooks(bookData);
-
-      // Clear the search input field after processing the search.
-      setSearchInput("");
-      
-    } catch (error) {
-
-      // Handle errors in case of network issues or other problems.
-      console.error("Internal Server Error", error);
+      setSearchInput('');
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  // Create a function to handle saving a book to our database
   const handleSaveBook = async (bookId) => {
-    // Find the book in the `searchedBooks` state that matches the given bookId
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-
-    // Get the user's authentication token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    // If there is no authentication token, return early
     if (!token) {
       return false;
     }
 
     try {
-      // Use the saveBook mutation to save a book, with the 'bookToSave' variable as the input.
-      // Also, update the Apollo Client cache with the new book data.
       const { data } = await saveBook({
-        variables: { input: bookToSave },
+        variables: { input: { bookToSave} },
       });
 
-      // Check for errors in the mutation response
       if (error) {
-        throw new Error("Please try again!");
+        throw new Error('Something went wrong!' + error.message);
       }
-
-      console.log("book", data);
-
-      // Update the saved book IDs with the new book ID
-      setSavedBookIds([...getSavedBookIds(), data.saveBook._id]);
-
+console.log("book", data);
+      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (err) {
-      console.error("Unable to save a book. Please try refreshing the page.", err);
+      console.error(err);
     }
-  
+  };
+
   return (
     <>
       <div className="text-light bg-dark p-5">
@@ -127,36 +101,37 @@ const SearchBooks = () => {
           </Form>
         </Container>
       </div>
+
       <Container>
-        <h2>
+        <h2 className="pt-5">
           {searchedBooks.length
             ? `Viewing ${searchedBooks.length} results:`
-            : "Search for a book to begin"}
+            : 'Search for a book to begin'}
         </h2>
         <Row>
           {searchedBooks.map((book) => (
-            <Col md={4} key={book.bookId}>
+            <Col md="4" key={book.bookId}>
               <Card border="dark">
-                {book.image && (
+                {book.image ? (
                   <Card.Img
                     src={book.image}
                     alt={`The cover for ${book.title}`}
                     variant="top"
                   />
-                )}
+                ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
                   <p className="small">Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  {savedBookIds && (
+                  {Auth.loggedIn() && (
                     <Button
-                      disabled={savedBookIds.includes(book.bookId)}
+                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                       className="btn-block btn-info"
                       onClick={() => handleSaveBook(book.bookId)}
                     >
-                      {savedBookIds.includes(book.bookId)
-                        ? "This book has already been saved!"
-                        : "Save this Book!"}
+                      {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
+                        ? 'This book has already been saved!'
+                        : 'Save this Book!'}
                     </Button>
                   )}
                 </Card.Body>
@@ -168,5 +143,5 @@ const SearchBooks = () => {
     </>
   );
 };
-};
+
 export default SearchBooks;
