@@ -16,7 +16,7 @@ const SearchBooks = () => {
 
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());//state for holding saved bookId values
 
-  const [saveBook, {error}] = useMutation(SAVE_BOOK);//define the savebook function from mutation
+  const [saveBook] = useMutation(SAVE_BOOK);//define the savebook function from mutation
 
   useEffect(() => {
     // This effect runs when the component unmounts
