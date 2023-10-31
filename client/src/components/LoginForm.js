@@ -27,15 +27,20 @@ const LoginForm = () => {
       event.stopPropagation();
     }
     try {
-        const { data } = await loginUser({
+        const { res } = await loginUser({
           variables: { ...userFormData }
         });
-        Auth.login(data.login.token);
+        const{token}= res.data.login;
+        Auth.login(token);
       } catch (err) {
         console.error(err);
         setShowAlert(true);
       }
-      setUserFormData({ email: '', password: '' });
+      setUserFormData({ 
+        username:'', 
+        email: '', 
+        password: '' 
+      });
 
   };
 
@@ -45,7 +50,7 @@ const LoginForm = () => {
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your login credentials!
         </Alert>
-        <Form.Group>
+        <Form.Group className='mb-3'> 
           <Form.Label htmlFor='email'>Email</Form.Label>
           <Form.Control
             type='text'
@@ -58,7 +63,7 @@ const LoginForm = () => {
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
         </Form.Group>
         
-        <Form.Group>
+        <Form.Group className='mb-3'>
           <Form.Label htmlFor='password'>Password</Form.Label>
           <Form.Control
             type='password'
