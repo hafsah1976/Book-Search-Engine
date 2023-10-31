@@ -20,7 +20,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    addUser: async (parent, args) => {
+    createUser: async (parent, args) => {
       try {
         // Create a new user in the database
         const user = await User.create(args);
@@ -80,13 +80,13 @@ const resolvers = {
       }
     },
             
-    removeBook: async (parent, { bookId }, context) => {
+    deleteBook: async (parent, { bookId }, context) => {
       if (context.user) {
         try {
           // Remove a book from the user's savedBooks array by bookId
-          const updatedUser = await User.findByOneAndUpdate(
+          const updatedUser = await User.findOneAndUpdate(
             {_id: context.user._id},
-            { $pull: { savedBooks: { bookId: bookId } } },
+            { $pull: { savedBooks: { bookId } } },
             { new: true} 
           )
           return updatedUser;

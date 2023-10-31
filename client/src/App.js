@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import { ApolloProvider,  ApolloClient, InMemoryCache} from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
+import { ApolloProvider,  ApolloClient, InMemoryCache, createHttpLink} from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
 //import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
 
 import SearchBooks from './pages/SearchBooks';
@@ -16,7 +16,9 @@ import Navbar from './components/Navbar';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(), // Use an in-memory cache for query results 
-
+  link: createHttpLink({
+    uri: "/graphql",
+}),
   request: (operation) => {
     const token = localStorage.getItem("id_token");
 
@@ -26,7 +28,6 @@ const client = new ApolloClient({
       },
     });
   },
-  uri: "/graphql",
 });
 
 //const httpLink = createHttpLink({

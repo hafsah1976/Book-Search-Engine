@@ -1,8 +1,5 @@
 // Import the 'decode' function from 'jwt-decode' library to decode a token
 import decode from 'jwt-decode';
-// Set the secret key and expiration time for the JWT
-// const SECRET_KEY = process.env.SECRET_KEY;
-// const EXPIRATION_TIME = process.env.EXPIRATION_TIME;
 
 // Create a class for handling user authentication
 class AuthService {

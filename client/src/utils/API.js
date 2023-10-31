@@ -1,7 +1,6 @@
 // Function to get the logged-in user's information from the server (requires a token)
 export const getMe = (token) => {
   return fetch('/api/users/me', {
-     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`, // Include the token in the headers for authentication

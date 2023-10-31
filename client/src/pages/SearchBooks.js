@@ -3,7 +3,6 @@ import { Container, Col, Form, Button, Card, Row } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
-import {GET_ME} from '../utils/queries';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
@@ -16,7 +15,7 @@ const SearchBooks = () => {
 
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());//state for holding saved bookId values
 
-  const [saveBook, {error}] = useMutation(SAVE_BOOK);//define the savebook function from mutation
+  const [saveBook, { loading, error }] = useMutation(SAVE_BOOK);//define the savebook function from mutation
 
   useEffect(() => {
     // This effect runs when the component unmounts
@@ -47,6 +46,7 @@ const SearchBooks = () => {
         authors: book.volumeInfo.authors || ['No author to display'],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
+        link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
@@ -68,18 +68,20 @@ const SearchBooks = () => {
     }
 
     try {
-      await saveBook({
-        variables: { book:  bookToSave },
-      update: cache =>{
-        const {me} = cache.readQuery({query: GET_ME});
+      const response = await saveBook({
+        variables: { 
+          bookData:  bookToSave 
+        },
+      });
+    console.log("book", response);
 
-        cache.writeQuery({query: GET_ME, data: {me: {...me, savedBooks: [...me.savedBooks, bookToSave]}}})
-      }
-    });
-    //console.log("book", data);
+     // trying to access the result of the mutation, 
+     const savedBook = response.data.saveBook;
+     console.log("Saved book:", savedBook);
+    
     setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (error) {
-      console.error("Internal erro", error);
+      console.error("Internal error");
     }
   };
 
@@ -90,7 +92,7 @@ const SearchBooks = () => {
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
             <Row>
-              <Col md={8}>
+              <Col xs={12} md={8}>
                 <Form.Control
                   name="searchInput"
                   value={searchInput}
@@ -100,7 +102,7 @@ const SearchBooks = () => {
                   placeholder="Search for a book"
                 />
               </Col>
-              <Col md={4}>
+              <Col xs={12} md={4}>
                 <Button type="submit" variant="success" size="lg">
                   Submit Search
                 </Button>
@@ -111,7 +113,7 @@ const SearchBooks = () => {
       </div>
 
       <Container>
-        <h2>
+        <h2 className='pt-5'>
           {searchedBooks.length
             ? `Viewing ${searchedBooks.length} results:`
             : 'Search for a book to begin'}
@@ -119,7 +121,8 @@ const SearchBooks = () => {
         <Card>
           {searchedBooks.map((book) => {
             return (
-              <Card key={book.bookId} border='dark'>
+              <Row key={book.bookId}>
+              <Card  border='dark'>
                 {book.image ? (
                   <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
                 ) : null}
@@ -139,6 +142,7 @@ const SearchBooks = () => {
                   )}
                 </Card.Body>
               </Card>
+              </Row>
             );
           })}
         </Card>
