@@ -58,15 +58,15 @@ const resolvers = {
       }
     },
 
-    saveBook: async (parent, { book }, context) => {
+    saveBook: async (parent, { bookData }, context) => {
       try {
         // Check if the user is authenticated (logged in)
         if (context.user) {
           // If the user is authenticated, update their document to add the book to savedBooks
           const updatedUser = await User.findOneAndUpdate(
             { _id: context.user._id }, // Find the user by their unique ID
-            { $addToSet: { savedBooks: book } }, // Add the book to the savedBooks array (no duplicates)
-            { new: true } // Return the updated user with validation checks
+            { $addToSet: { savedBooks: bookData } }, // Add the book to the savedBooks array (no duplicates)
+            { new: true, runValidators:true } // Return the updated user with validation checks
           ); // Populate the 'savedBooks' field for a full response, including book details
           return updatedUser; // Return the updated user with the saved book
         } 

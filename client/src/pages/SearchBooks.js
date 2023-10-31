@@ -16,7 +16,7 @@ const SearchBooks = () => {
 
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());//state for holding saved bookId values
 
-  const [saveBook] = useMutation(SAVE_BOOK);//define the savebook function from mutation
+  const [saveBook, {error}] = useMutation(SAVE_BOOK);//define the savebook function from mutation
 
   useEffect(() => {
     // This effect runs when the component unmounts
@@ -24,8 +24,8 @@ const SearchBooks = () => {
       // Save the updated `savedBookIds` array to `localStorage`
       saveBookIds(savedBookIds);
     };
-  });
-
+  }); // Empty dependency array to run the effect only on unmount
+  
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -47,7 +47,6 @@ const SearchBooks = () => {
         authors: book.volumeInfo.authors || ['No author to display'],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
-        link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
@@ -59,38 +58,39 @@ const SearchBooks = () => {
   };
 
   const handleSaveBook = async (bookId) => {
-    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-  
+
+    const bookToSave = searchedBooks.find((book) => book.bookId === bookId);//find the book in searchedbooks state by matching id
+    
+    const token = Auth.loggedIn() ? Auth.getToken() : null; //get toke to make sure user is logged in
+
     if (!token) {
       return false;
     }
-  
+
     try {
       await saveBook({
-        variables: { book: bookToSave },
-        update: (cache) => {
-          const { me } = cache.readQuery({ query: GET_ME });
-  
-          cache.writeQuery({
-            query: GET_ME,
-            data: { me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } },
-          });
-        },
-      });
-  
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+        variables: { book:  bookToSave },
+      update: cache =>{
+        const {me} = cache.readQuery({query: GET_ME});
+
+        cache.writeQuery({query: GET_ME, data: {me: {...me, savedBooks: [...me.savedBooks, bookToSave]}}})
+      }
+    });
+    //console.log("book", data);
+    setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (error) {
-      console.error('Internal error', error);
+      console.error("Internal erro", error);
     }
-  };  return (
+  };
+
+  return (
     <>
       <div className="text-light bg-dark p-5">
         <Container>
           <h1>Search for Books!</h1>
           <Form onSubmit={handleFormSubmit}>
             <Row>
-              <Col xs={12} md={8}>
+              <Col md={8}>
                 <Form.Control
                   name="searchInput"
                   value={searchInput}
@@ -100,7 +100,7 @@ const SearchBooks = () => {
                   placeholder="Search for a book"
                 />
               </Col>
-              <Col xs={12} md={4}>
+              <Col md={4}>
                 <Button type="submit" variant="success" size="lg">
                   Submit Search
                 </Button>
@@ -119,7 +119,7 @@ const SearchBooks = () => {
         <Card>
           {searchedBooks.map((book) => {
             return (
-              <Card key={book.bookId} border='dark' md={4}>
+              <Card key={book.bookId} border='dark'>
                 {book.image ? (
                   <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' />
                 ) : null}

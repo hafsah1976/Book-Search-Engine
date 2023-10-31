@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { ApolloProvider,  ApolloClient, InMemoryCache} from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
 //import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
 
@@ -62,15 +62,18 @@ function App() {
         <>
           {/* Wrap the content in an empty fragment */}
           <Navbar />
-          <Switch>
+          <Routes>
           {/* Render the Navbar component for navigation */}
             {/* Use the Switch component to render different components based on the route */}
-            <Route exact  path='/' element={<SearchBooks />} />
+            <Route  path='/' element={<SearchBooks />} />
             {/* Render the SearchBooks component for the root path */}
-            <Route exact path='/saved' element={<SavedBooks />} />
+            <Route  path='/saved' element={<SavedBooks />} />
             {/* Render the SavedBooks component for the '/saved' path */}
-            <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />                    {/* Render an error message for any other path */}
-          </Switch>
+            <Route
+              path='*'
+              element={<h1 className='display-2'>Wrong page!</h1>}
+            />            {/* Render an error message for any other path */}
+          </Routes>
         </>
       </Router>
     </ApolloProvider>
