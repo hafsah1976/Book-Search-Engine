@@ -6,7 +6,10 @@ const mongoose = require('mongoose');
 
 
 // Connect to the MongoDB database using the provided URI
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/googlebooks');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:3001/googlebooks', {
+useNewUrlParser: true,
+useUnifiedTopology: true
+});
 
 // Export the Mongoose connection to be used in other parts of the application
 module.exports = mongoose.connection;

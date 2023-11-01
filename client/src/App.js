@@ -7,8 +7,6 @@ import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
   
-require('dotenv').config({ path: '../.env' });//confidenttial variables
-
 //This code sets up an Apollo Client with authentication handling by using the setContext function. 
 //It adds the token from local storage to the request headers before making a request to the GraphQL API.
 //This client can be used in React components to interact with your GraphQL API while handling user authentication.
@@ -16,7 +14,7 @@ require('dotenv').config({ path: '../.env' });//confidenttial variables
 // Construct our main GraphQL API endpoint using createHttpLink
 
 const httpLink = createHttpLink({
-  uri: (process.env.NODE_ENV === 'production') ? 'http://localhost:3001/graphql' : '/graphql',
+  uri: '/graphql',
 });
 
 // Create an authLink to add the authentication token to request headers
@@ -36,15 +34,15 @@ const client = new ApolloClient({
   // Set up our client to execute the `authLink` middleware prior to making the request to our GraphQL API
   link: authLink.concat(httpLink), // Chain the authLink and httpLink together
   cache: new InMemoryCache(), // Use an in-memory cache for query results 
-  defaultOptions: {
-    query: {
-      errorPolicy: 'all',
-    },
-    mutate: {
-      errorPolicy: 'ignore',
-    },
-}}
-);
+  // defaultOptions: {
+  //   query: {
+  //     errorPolicy: 'all',
+  //   },
+  //   mutate: {
+  //     errorPolicy: 'ignore',
+  //   },
+//}
+});
 
 function App() {
   return (
