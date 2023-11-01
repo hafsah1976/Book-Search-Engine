@@ -32,8 +32,6 @@ The Book Search Engine is a web application that allows users to search for book
 
 7. You can log out using the "Logout" button.
 
-[Quick-Demo of the Google books App](https://watch.screencastify.com/v/6zePkGQ5IQL4COlZvzmZ)
-
 ![Google Book Search Results](/client/public/google-book-search-engine.png).
 
 ![MongoDB compass showing added data through the website](/client/public/MongoDBCompass-ree_googlebooks-app.users.png);
@@ -106,7 +104,7 @@ Now, your Book Search Engine application is live on Heroku with a MongoDB databa
 
 ## Credits
 
-This project was refactored by Hafsah Nasreen. Debugged with the help of Xpert Learning Assistant at the bootcamp portal.
+This project was refactored by Hafsah Nasreen. Debugged with the help of Xpert Learning Assistant at the bootcamp spot portal.
 You can find the source code on GitHub at [Book-Search-Engine](https://github.com/hafsah1976/Book-Search-Engine).
 
 Special thank you to Spider and the entire LA Team from AskBCS Learning Assistant!
