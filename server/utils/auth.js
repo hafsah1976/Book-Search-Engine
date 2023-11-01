@@ -10,7 +10,8 @@ const expiration = process.env.expiration; // Expiration time of the JWT (2 hour
 module.exports = {
   // Middleware function for authenticating routes
   authMiddleware: function ({ req }) {
-    let token = req.headers.authorization;
+    //allowing tokens to be sent from body, query, or headers
+    let token = req.body.token || req.query.token || req.headers.authorization;
 
     if (req.headers.authorization) {
       token = token.split(" ").pop().trim(); // Remove 'Bearer ' from the token string if it exists
@@ -25,7 +26,7 @@ module.exports = {
       req.user = data; // Attach user data to the request object
     } catch (err) {
       console.log("Invalid token"); // Handle invalid tokens (for debugging)
-      return res.status(400).json({ message: "invalid token!" });
+      //return res.status(400).json({ message: "invalid token!" });
     }
 
     return req;// return the object here to be passed as resolver context
