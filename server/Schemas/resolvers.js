@@ -9,9 +9,9 @@ const resolvers = {
       if (context.user) {
         try {
           //find user by id
-          const user = await User.findOne({_id: context.user._id})
+          const userData = await User.findOne({_id: context.user._id})
           .select('-__v -password');
-          return user;
+          return userData;
         } catch (error) {
           // If there's an error during data retrieval, throw an AuthenticationError
           throw new AuthenticationError("You must be logged in to continue.");
@@ -20,7 +20,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    createUser: async (parent, args) => {
+    addUser: async (parent, args) => {
       try {
         // Create a new user in the database
         const user = await User.create(args);
@@ -54,33 +54,29 @@ const resolvers = {
         const token = signToken(user); // Sign a JWT token for the authenticated user
         return { token, user }; // Return the JWT token and user data
       } catch (error) {
-        throw new AuthenticationError("Failed to login" + error.message); // throw error if login fails
+        throw new AuthenticationError("Failed to login"); // throw error if login fails
       }
     },
 
     saveBook: async (parent, { bookData }, context) => {
-      try {
         // Check if the user is authenticated (logged in)
-        if (context.user) {
-          // If the user is authenticated, update their document to add the book to savedBooks
-          const updatedUser = await User.findOneAndUpdate(
+ if (context.user) {
+       try {
+       // If the user is authenticated, update their document to add the book to savedBooks
+        const updatedUser = await User.findByIdAndUpdate(
             { _id: context.user._id }, // Find the user by their unique ID
-            { $addToSet: { savedBooks: bookData } }, // Add the book to the savedBooks array (no duplicates)
-            { new: true, runValidators:true } // Return the updated user with validation checks
-          ); // Populate the 'savedBooks' field for a full response, including book details
+            { $push: { savedBooks: bookData } }, // Add the book to the savedBooks array (no duplicates)
+            { new: true } // Return the updated user with validation checks
+          ); 
           return updatedUser; // Return the updated user with the saved book
-        } 
-        //   // If the user is not authenticated, throw an authentication error
-        //   throw new AuthenticationError("You must be logged in to save books");
-        // }
-      } catch (error) {
+        } catch (error) {
         // If an error occurs during the process, throw a custom error message
     throw new AuthenticationError("You must be logged in to save books");
-
+        }
       }
     },
             
-    deleteBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
         try {
           // Remove a book from the user's savedBooks array by bookId
@@ -95,8 +91,8 @@ const resolvers = {
           throw new AuthenticationError("Login required to delete a book!");
         }
       }
-  }
-}
+  },
+},
 };
 
 module.exports = resolvers;
