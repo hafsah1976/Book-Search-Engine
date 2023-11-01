@@ -1,5 +1,4 @@
 // Import required modules and dependencies
-require('dotenv').config({ path: '../.env' }); // Load confidential variables from a .env file
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');

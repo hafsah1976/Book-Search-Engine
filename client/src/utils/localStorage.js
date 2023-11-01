@@ -1,4 +1,4 @@
-// Function to get saved book IDs from local storage
+//Function to get saved book IDs from local storage
 export const getSavedBookIds = () => {
   // Check if there are saved book IDs in local storage, and parse the data
   const savedBookIds = localStorage.getItem('saved_books')

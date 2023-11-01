@@ -3,7 +3,7 @@ import { Container, Col, Form, Button, Card } from 'react-bootstrap';
 import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../utils/mutations';
-import { searchGoogleBooks } from '../utils/API';
+//import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
 const SearchBooks = () => {
@@ -47,7 +47,6 @@ const SearchBooks = () => {
         authors: book.volumeInfo.authors || ['No author to display'],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
-        //link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
 
@@ -64,7 +63,7 @@ const SearchBooks = () => {
 
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);//find the book in searchedbooks state by matching id
     
-    const token = Auth.loggedIn() ? Auth.getToken() : null; //get toke to make sure user is logged in
+    const token = Auth.loggedIn() ? Auth.getToken() : null; //get token to make sure user is logged in
 
     if (!token) {
       return false;
@@ -75,6 +74,8 @@ const SearchBooks = () => {
         variables: { bookData: {...bookToSave}}, 
       });
     console.log("book", savedBookIds);
+    console.log("book", data);
+
     
     setSavedBookIds([...savedBookIds, bookToSave.bookId]);
     } catch (error) {

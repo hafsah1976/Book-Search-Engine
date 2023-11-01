@@ -4,8 +4,8 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
 // Set the secret key and expiration time for the JWT
-const secret = process.env.secret; // A secret key for signing and verifying the JWT
-const expiration = process.env.expiration; // Expiration time of the JWT (2 hours)
+const secret = "mysecretsshhhhh";// A secret key for signing and verifying the JWT
+const expiration = "2h"; // Expiration time of the JWT (2 hours)
 
 module.exports = {
   // Middleware function for authenticating routes
