@@ -1,4 +1,5 @@
 // Import required modules and dependencies
+require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
@@ -22,13 +23,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Serve the React frontend as static assets if in production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
 // Define a route for the root URL ("/") and serve the React frontend
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/'));
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // Start the Apollo Server and apply it as middleware to the Express app
