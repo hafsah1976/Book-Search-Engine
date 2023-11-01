@@ -4,7 +4,7 @@
 
 The Book Search Engine is a web application that allows users to search for books, view search results, save books to their account, and manage their saved books. This project was motivated by a desire to create a useful tool for avid readers. The application solves the problem of easily searching for books, saving them, and accessing saved book information. It uses GraphQL for efficient data retrieval and management and employs JWT tokens for user authentication.
 
-[Please Click here to view the live link]()
+[Please Click here to view the live link](https://watch.screencastify.com/v/bTz6vZBDuVFEexncv4Ku)
 
 ## Table of Contents
 
