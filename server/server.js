@@ -1,5 +1,4 @@
 // Import required modules and dependencies
-require('dotenv').config({ path: '../.env' });
 const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
@@ -18,7 +17,6 @@ const server = new ApolloServer({
   context: authMiddleware, // Apply authentication middleware to the server context
 });
 
-// Enable parsing of URL-encoded and JSON request bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -26,22 +24,22 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
+// app.use(routes);
 
-// Start the Apollo Server and apply it as middleware to the Express app
-const startApolloServer = async (typeDefs, resolvers) => {
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
+
+const startApolloServer = async () => {
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({app});
 
-  // Connect to the database and start the server once the database connection is open
   db.once('open', () => {
-    app.listen(PORT, async () => {
-      console.log(`🌍 Now listening on localhost:${PORT}!`);
-      console.log(
-        `Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`
-      );
-    });
+    app.listen(PORT, () => {
+    console.log(`🌍 Now listening on localhost:${PORT}`);
+    console.log(`graphql playground url: http://localhost:${PORT}${server.graphqlPath}`);
+  })
   });
 };
 
-// Start the Apollo Server with the provided schema and resolvers
-startApolloServer(typeDefs, resolvers);
+startApolloServer();
