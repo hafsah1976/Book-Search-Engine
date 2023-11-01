@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
@@ -7,7 +7,9 @@ import { ADD_USER } from '../utils/mutations';
 
 const SignupForm = () => {
   // Set initial form state
-  const [userFormData, setUserFormData] = useState({username: '', email: '', password: '' });
+  const [userFormData, setUserFormData] = useState({
+    username: "", email: "", password: "",
+   });
 
   // Set state for form validation
   const [validated] = useState(false);
@@ -16,7 +18,15 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
   // Use the useMutation hook to execute the ADD_USER mutation
-  const [addUser] = useMutation(ADD_USER);
+  const [addUser, {error}] = useMutation(ADD_USER);
+
+  useEffect(() => {
+    if (error) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [error]);
 
   // Function to handle input changes
   const handleInputChange = (event) => {
@@ -34,23 +44,27 @@ const SignupForm = () => {
       event.stopPropagation();
     }
     try {
-      // Execute the CREATE_USER mutation with user data
+      // Execute the ADD_USER mutation with user data
       const { data } = await addUser({
         variables: { ...userFormData },
-      })
+      });
+      console.log(data);
       // Log in the user by storing the token in local storage
       Auth.login( data.addUser.token);
       } catch (err) {
       console.error(err);
-      // Show an alert in case of an error
-      setShowAlert(true);
     }
     // Clear the form and hide any previous alerts
-    setUserFormData({ username: "", email: "", password: "" });
+    setUserFormData({ 
+      username: "", 
+      email: "", 
+      password: "", 
+    });
   };
 
   return (
     <>
+      {/* This is needed for the validation functionality above */}
       <Form validated={validated} onSubmit={handleFormSubmit}>
         <Alert
           dismissible
@@ -61,7 +75,7 @@ const SignupForm = () => {
          Something went wrong with your signup!
         </Alert>
 
-        <Form.Group className='mb-3'>
+        <Form.Group>
           <Form.Label htmlFor="username">Username</Form.Label>
           <Form.Control
             type="text"
@@ -76,7 +90,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group>
           <Form.Label htmlFor="email">Email</Form.Label>
           <Form.Control
             type="email"
@@ -91,7 +105,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className='mb-3'>
+        <Form.Group >
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
