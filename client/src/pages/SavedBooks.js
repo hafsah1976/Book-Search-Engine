@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Card, Button, Col } from 'react-bootstrap';
+import { Container, Card, Button, Col, Row } from 'react-bootstrap';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
@@ -43,7 +43,7 @@ const SavedBooks = () => {
   return (
     <>
             <Container>
-      <div fluid className="text-light bg-dark">      </div>
+      <Row className="text-light bg-dark">      </Row>
           <h1>Viewing {userData.username}'s books!</h1>
         </Container>
       <Container>

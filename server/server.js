@@ -18,7 +18,7 @@ const server = new ApolloServer({
 });
 
 // Enable parsing of URL-encoded and JSON request bodies
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Serve the React frontend as static assets if in production
