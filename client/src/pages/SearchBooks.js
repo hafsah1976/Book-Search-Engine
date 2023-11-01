@@ -15,7 +15,7 @@ const SearchBooks = () => {
 
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());//state for holding saved bookId values
 
-  const [saveBook, { error }] = useMutation(SAVE_BOOK);//define the savebook function from mutation
+  const [saveBook] = useMutation(SAVE_BOOK);//define the savebook function from mutation
 
   useEffect(() => {
     // This effect runs when the component unmounts
@@ -32,7 +32,7 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await searchGoogleBooks(searchInput)
+      const response = await searchGoogleBooks(searchInput);
   
       if (!response.ok) {
         throw new Error('Something went wrong!');
@@ -68,8 +68,10 @@ const SearchBooks = () => {
     }
 
     try {
-      const {data} = await saveBook({
-        variables: { bookData: {...bookToSave}}, 
+      const { data } = await saveBook({
+        variables: { 
+          bookData: bookToSave 
+                    }
       });
     console.log("book", savedBookIds);
     console.log("book", data);
@@ -129,8 +131,7 @@ const SearchBooks = () => {
                   <Card.Text>{book.description}</Card.Text>
                   {Auth.loggedIn() && (
                     <Button
-                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId
-                        )}
+                      disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                       className='btn-block btn-info'
                       onClick={() => handleSaveBook(book.bookId)}
                       >

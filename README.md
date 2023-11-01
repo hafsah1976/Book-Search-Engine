@@ -36,6 +36,8 @@ The Book Search Engine is a web application that allows users to search for book
 
 ![Google Book Search Results](/client/public/google-book-search-engine.png).
 
+![MongoDB compass showing added data through the website](/client/public/MongoDBCompass-ree_googlebooks-app.users.png);
+
 ## Installation
 
 If you would like to see the project code on your desktop please follow the steps below, that explain how to run the project on the localhost as well.

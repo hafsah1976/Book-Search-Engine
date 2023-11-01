@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-
 import Auth from '../utils/auth';
 import { useMutation } from '@apollo/client';
 import { ADD_USER } from '../utils/mutations';
 
 const SignupForm = () => {
   // Set initial form state
-  const [userFormData, setUserFormData] = useState({
-    username: "", email: "", password: "",
-   });
+  const [userFormData, setUserFormData] = useState({ username: "", email: "", password: "" });
 
   // Set state for form validation
   const [validated] = useState(false);
@@ -18,15 +15,15 @@ const SignupForm = () => {
   const [showAlert, setShowAlert] = useState(false);
 
   // Use the useMutation hook to execute the ADD_USER mutation
-  const [addUser, {error}] = useMutation(ADD_USER);
+  const [addUser] = useMutation(ADD_USER);
 
-  useEffect(() => {
-    if (error) {
-      setShowAlert(true);
-    } else {
-      setShowAlert(false);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     setShowAlert(true);
+  //   } else {
+  //     setShowAlert(false);
+  //   }
+  // }, [error]);
 
   // Function to handle input changes
   const handleInputChange = (event) => {
@@ -46,8 +43,12 @@ const SignupForm = () => {
     try {
       // Execute the ADD_USER mutation with user data
       const { data } = await addUser({
-        variables: { ...userFormData },
-      });
+        variables: {
+          username: userFormData.username,
+          email: userFormData.email,
+          password: userFormData.password
+        }
+        });
       console.log(data);
       // Log in the user by storing the token in local storage
       Auth.login( data.addUser.token);
@@ -75,7 +76,7 @@ const SignupForm = () => {
          Something went wrong with your signup!
         </Alert>
 
-        <Form.Group>
+        <Form.Group  className='mb-3'>
           <Form.Label htmlFor="username">Username</Form.Label>
           <Form.Control
             type="text"
@@ -90,7 +91,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group  className='mb-3'>
           <Form.Label htmlFor="email">Email</Form.Label>
           <Form.Control
             type="email"
@@ -105,7 +106,7 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group >
+        <Form.Group  className='mb-3'>
           <Form.Label htmlFor="password">Password</Form.Label>
           <Form.Control
             type="password"
@@ -121,11 +122,7 @@ const SignupForm = () => {
         </Form.Group>
 
         <Button
-          disabled={
-            !(
-              userFormData.username &&
-              userFormData.email &&
-              userFormData.password
+          disabled={!(userFormData.username && userFormData.email && userFormData.password
             )
           }
           type="submit"

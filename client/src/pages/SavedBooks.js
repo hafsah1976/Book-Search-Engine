@@ -8,8 +8,8 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   // Use the useQuery hook to fetch user data based on the GET_ME query
-  const { loading, data } = useQuery(GET_ME);
-  const [removeBook, { error }] = useMutation(REMOVE_BOOK);
+  const { loading, error, data } = useQuery(GET_ME);
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
   const userData = data?.me || {};
 
@@ -38,6 +38,11 @@ const SavedBooks = () => {
   // Conditional rendering of component
   if (loading) {
     return <h2>LOADING...</h2>;
+  }
+  if (error) {
+    // Handle the error here, you can log it or display an error message
+    console.error('GraphQL Error:', error);
+    // You can also access error.message and error.graphQLErrors for more details
   }
 
   return (
