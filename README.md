@@ -105,6 +105,8 @@ Now, your Book Search Engine application is live on Heroku with a MongoDB databa
 This project was refactored by Hafsah Nasreen. Debugged with the help of Xpert Learning Assistant at the bootcamp portal.
 You can find the source code on GitHub at [Book-Search-Engine](https://github.com/hafsah1976/Book-Search-Engine).
 
+Special thank you to Spider and the entire LA Team from AskBCS Learning Assistant!
+
 This application uses the following technologies and libraries:
 
 Frontend: React, GraphQL, Apollo
