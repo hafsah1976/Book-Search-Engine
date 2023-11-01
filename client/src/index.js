@@ -1,4 +1,4 @@
-import React from 'react'; //Import the React library to use React components and features.
+import { React} from 'react'; //Import the React library to use React components and features.
 import ReactDOM from 'react-dom';// Import the ReactDOM library to interact with the DOM and render React components.
 import 'bootstrap/dist/css/bootstrap.min.css';// Import the Bootstrap CSS file to apply Bootstrap styles to the application.
 import './index.css';// Import a custom CSS file for additional styling.

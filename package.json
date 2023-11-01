@@ -13,12 +13,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "concurrently": "^5.1.0"
+    "concurrently": "^5.1.0",
+    "css-loader": "^6.8.1"
   },
-"dependencies": {
- "apollo-server-express": "^2.25.3",
-  "dotenv": "^16.0.3",
-  "express": "^4.17.2",
-   "graphql": "^15.8.0"
+  "dependencies": {
+    "apollo-server-express": "^2.25.3",
+    "dotenv": "^16.0.3",
+    "express": "^4.17.2",
+    "graphql": "^15.8.0",
+    "import": "^0.0.6"
   }
-}  
+}
