@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { ApolloProvider,  ApolloClient, InMemoryCache, createHttpLink} from "@apollo/client";  // Import Apollo Client and related modules for handling GraphQL data
-//import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
+import { setContext } from '@apollo/client/link/context'; // Import setContext for setting up context for Apollo Client
 
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
   
+require('dotenv').config({ path: '../.env' });//confidenttial variables
 
 //This code sets up an Apollo Client with authentication handling by using the setContext function. 
 //It adds the token from local storage to the request headers before making a request to the GraphQL API.
@@ -14,45 +15,36 @@ import Navbar from './components/Navbar';
 
 // Construct our main GraphQL API endpoint using createHttpLink
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(), // Use an in-memory cache for query results 
-  link: createHttpLink({
-    uri: "/graphql",
-}),
-  request: (operation) => {
-    const token = localStorage.getItem("id_token");
-
-    operation.setContext({
-      headers:{
-        authorization:token ? `Bearer ${token}` : "",
-      },
-    });
-  },
+const httpLink = createHttpLink({
+  uri: (process.env.NODE_ENV === 'production') ? 'http://localhost:3001/graphql' : '/graphql',
 });
 
-//const httpLink = createHttpLink({
- // uri: '/graphql', // Set the URI of your GraphQL API endpoint
-//});
-
 // Create an authLink to add the authentication token to request headers
-//const authLink = setContext((_, { headers }) => {
+const authLink = setContext((_, { headers }) => {
   // Get the token from local storage (you might consider error handling if the token is not present)
-  //const token = localStorage.getItem('id_token');
-  
-//  return {
-    //headers: {
-  //    ...headers,
-      //authorization: token ? `Bearer ${token}` : '', // Set the 'Authorization' header with the token
-    //},
-  //};
-//});
+  const token = localStorage.getItem('id_token');
+   return {
+  headers: {
+  ...headers,
+  authorization: token ? `Bearer ${token}` : '', // Set the 'Authorization' header with the token
+    },
+  };
+});
 
 // Create the Apollo Client with the specified configuration
-//const client = new ApolloClient({
+const client = new ApolloClient({
   // Set up our client to execute the `authLink` middleware prior to making the request to our GraphQL API
-  //link: authLink.concat(httpLink), // Chain the authLink and httpLink together
-  //cache: new InMemoryCache(), // Use an in-memory cache for query results 
-//});
+  link: authLink.concat(httpLink), // Chain the authLink and httpLink together
+  cache: new InMemoryCache(), // Use an in-memory cache for query results 
+  defaultOptions: {
+    query: {
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'ignore',
+    },
+}}
+);
 
 function App() {
   return (

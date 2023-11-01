@@ -8,7 +8,7 @@ import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
   // Use the useQuery hook to fetch user data based on the GET_ME query
-  const { loading, data } = useQuery(GET_ME);
+  const { loading, data } = useQuery(GET_ME, { errorPolicy: "ignore" });
   const userData = data?.me || {};
   const [deleteBook, { error }] = useMutation(DELETE_BOOK);
 

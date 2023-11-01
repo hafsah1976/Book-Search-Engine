@@ -6,7 +6,6 @@ const db = require('./config/connection');
 const { ApolloServer } = require('apollo-server-express');
 const { typeDefs, resolvers } = require('./schemas');
 const app = express();
-//const { gql } = require('graphql');
 const {authMiddleware}= require('./utils/auth');
 
 // Define the port on which the server should listen, using the provided PORT or defaulting to 3001
@@ -21,20 +20,19 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/build/index.html'));
+//});
 
 // Create an Apollo Server instance with your GraphQL schema and resolvers
 const server = new ApolloServer({
   typeDefs, // GraphQL schema definition
   resolvers,// GraphQL resolvers
   context: authMiddleware,
- // gql, 
 });
 
 // Start the Apollo Server and apply it as middleware to the Express app
-const startApolloServer = async () => {
+const startApolloServer = async (typeDefs,resolvers) => {
   await server.start();
   server.applyMiddleware({ app });
 
@@ -46,4 +44,4 @@ db.once('open', () => {
 });
 };
 
-startApolloServer();
+startApolloServer(typeDefs,resolvers);
