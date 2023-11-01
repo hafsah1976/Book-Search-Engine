@@ -4,7 +4,9 @@
 
 The Book Search Engine is a web application that allows users to search for books, view search results, save books to their account, and manage their saved books. This project was motivated by a desire to create a useful tool for avid readers. The application solves the problem of easily searching for books, saving them, and accessing saved book information. It uses GraphQL for efficient data retrieval and management and employs JWT tokens for user authentication.
 
-[Please Click here to view the live link](https://watch.screencastify.com/v/bTz6vZBDuVFEexncv4Ku)
+[Please Click here to view walkthrough](https://watch.screencastify.com/v/bTz6vZBDuVFEexncv4Ku)
+
+[Experience Live App here]
 
 ## Table of Contents
 
@@ -32,7 +34,7 @@ The Book Search Engine is a web application that allows users to search for book
 
 [Quick-Demo of the Google books App](https://watch.screencastify.com/v/6zePkGQ5IQL4COlZvzmZ)
 
-![Google Book Search Results](Google-Book-Search.png).
+![Google Book Search Results](/client/public/google-book-search-engine.png).
 
 ## Installation
 
@@ -109,8 +111,8 @@ Special thank you to Spider and the entire LA Team from AskBCS Learning Assistan
 
 This application uses the following technologies and libraries:
 
-Frontend: React, GraphQL, Apollo
-Backend: Express, JWT Tokens, MongoDB
+Frontend: React, GraphQL, Apollo, JWT Tokens
+Backend: Nodejs-Express, JWT Tokens, MongoDB &  Mongoose
 
 ## License
 

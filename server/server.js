@@ -22,15 +22,10 @@ const server = new ApolloServer({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Serve the React frontend as static assets if in production
-if (process.env.NODE_ENV === 'development') {
+// if we're in production, serve client/build as static assets
+if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
-
-// Define a route for the root URL ("/") and serve the React frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
 
 // Start the Apollo Server and apply it as middleware to the Express app
 const startApolloServer = async (typeDefs, resolvers) => {
