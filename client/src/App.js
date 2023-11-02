@@ -19,7 +19,7 @@ import Navbar from "./components/Navbar";
 // Construct our main GraphQL API endpoint using createHttpLink
 
 const httpLink = createHttpLink({
-  uri: (process.env.NODE_ENV === 'production') ? 'http://localhost:3001/graphql' : '/graphql',
+  uri:  '/graphql',
 });
 
 // Create an authLink to add the authentication token to request headers
