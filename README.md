@@ -32,9 +32,9 @@ The Book Search Engine is a web application that allows users to search for book
 
 7. You can log out using the "Logout" button.
 
-![Google Book Search Results](/client/public/google-book-search-engine.png).
+![Google Book Search Results](google-book-search-engine.png).
 
-![MongoDB compass showing added data through the website](/client/public/MongoDBCompass-ree_googlebooks-app.users.png);
+![MongoDB compass showing added data through the website](MongoDBCompass-ree_googlebooks-app.users.png);
 
 ## Installation
 
